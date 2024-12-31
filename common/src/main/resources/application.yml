@@ -1,0 +1,15 @@
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+open:
+  api:
+    title: Hr database oracle - api service
+    server: http://localhost:8000
+    description: Server developer 1
+    service:
+server:
+  port: 8000
