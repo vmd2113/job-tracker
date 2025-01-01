@@ -1,7 +1,9 @@
 package com.duongw.commonservice.service;
 
+import com.duongw.commonservice.model.dto.request.user.LoginRequest;
 import com.duongw.commonservice.model.dto.request.user.RegisterUserRequest;
 import com.duongw.commonservice.model.dto.request.user.UpdateUserRequest;
+import com.duongw.commonservice.model.dto.response.user.UserLoginResponse;
 import com.duongw.commonservice.model.dto.response.user.UserResponseDTO;
 
 import java.util.List;
@@ -24,6 +26,8 @@ public interface IUserService {
     UserResponseDTO updateUserStatus(Long id, String status);
 
     void deleteUser(Long id);
+
+    UserLoginResponse validateUser(LoginRequest loginRequest);
 
 
 }

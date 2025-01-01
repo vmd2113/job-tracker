@@ -3,11 +3,15 @@ package com.duongw.commonservice.service.impl;
 import com.duongw.common.config.i18n.Translator;
 import com.duongw.common.exception.AlreadyExistedException;
 import com.duongw.common.exception.ResourceNotFoundException;
+import com.duongw.commonservice.model.dto.request.user.LoginRequest;
 import com.duongw.commonservice.model.dto.request.user.RegisterUserRequest;
 import com.duongw.commonservice.model.dto.request.user.UpdateUserRequest;
+import com.duongw.commonservice.model.dto.response.user.UserLoginResponse;
 import com.duongw.commonservice.model.dto.response.user.UserResponseDTO;
 import com.duongw.commonservice.model.entity.Users;
 import com.duongw.commonservice.repository.UserRepository;
+import com.duongw.commonservice.service.IItemService;
+import com.duongw.commonservice.service.IUserRoleService;
 import com.duongw.commonservice.service.IUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +23,15 @@ import java.util.List;
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
+    private final IUserRoleService userRoleService;
+    private final IItemService itemService;
 
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, IUserRoleService userRoleService, IItemService itemService) {
         this.userRepository = userRepository;
+        this.userRoleService = userRoleService;
+        this.itemService = itemService;
     }
 
     private UserResponseDTO convertToUserResponseDTO(Users user) {
@@ -142,5 +150,23 @@ public class UserService implements IUserService {
     public void deleteUser(Long id) {
         Users findUser = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("user.not-found")));
         userRepository.delete(findUser);
+    }
+
+    @Override
+    public UserLoginResponse validateUser(LoginRequest loginRequest) {
+        Users user = userRepository.findByUsername(loginRequest.getUsername());
+        if (user == null) {
+            throw new ResourceNotFoundException(Translator.toLocate("user.not-found"));
+        } else {
+            Long roleId = userRoleService.getRoleByUserId(user.getUserId());
+            String role = itemService.getItemById(roleId).getItemName();
+
+            UserLoginResponse userLoginResponse = new UserLoginResponse();
+            userLoginResponse.setUsername(user.getUsername());
+            userLoginResponse.setRole(role);
+            return userLoginResponse;
+
+        }
+      
     }
 }
