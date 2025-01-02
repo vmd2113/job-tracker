@@ -8,6 +8,7 @@ import lombok.Data;
 @Builder
 
 public class FileResponseDTO {
+
     private Long fieldId;
 
     private String fileName;
@@ -16,7 +17,7 @@ public class FileResponseDTO {
 
     private String businessCode;
 
-    private String businessId;
+    private Long businessId;
 
     private Long status;
 }

@@ -7,4 +7,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FileRepository extends JpaRepository<Files, Long> {
+
+    Files findByBusinessCode(String businessCode);
+    Files findByBusinessId(Long businessId);
+
+    void deleteByBusinessId(Long businessId);
+    void deleteByBusinessCode(String businessCode);
 }

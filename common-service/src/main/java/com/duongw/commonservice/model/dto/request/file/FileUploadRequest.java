@@ -17,7 +17,7 @@ public class FileUploadRequest {
 
     private String businessCode;
 
-    private String businessId;
+    private Long businessId;
 
     private Long status;
 
