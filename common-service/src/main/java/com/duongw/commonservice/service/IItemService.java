@@ -9,16 +9,24 @@ import java.util.List;
 
 public interface IItemService {
     List<ItemResponseDTO> getAllItem();
+
     List<ItemResponseDTO> getItemByCategoryId(Long categoryId);
+
     List<ItemResponseDTO> getItemByParentItemId(Long parentItemId);
 
     ItemResponseDTO getItemById(Long id);
-    ItemResponseDTO getItemByName(String name);
-    ItemResponseDTO createItem(CreateItemRequest item);
-    ItemResponseDTO updateItem(Long id, UpdateItemRequest item);
-    ItemResponseDTO updateItemStatus(Long id, String status);
-    void deleteItem(Long id);
 
+    ItemResponseDTO getItemByName(String name);
+
+    ItemResponseDTO getItemByCode(String code);
+
+    ItemResponseDTO createItem(CreateItemRequest item);
+
+    ItemResponseDTO updateItem(Long id, UpdateItemRequest item);
+
+    ItemResponseDTO updateItemStatus(Long id, String status);
+
+    void deleteItem(Long id);
 
     RoleResponse convertToRoleResponseDTO(Long id);
 

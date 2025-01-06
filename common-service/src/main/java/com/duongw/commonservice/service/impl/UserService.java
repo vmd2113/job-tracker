@@ -7,18 +7,22 @@ import com.duongw.commonservice.model.dto.request.user.CreateUserRequest;
 import com.duongw.commonservice.model.dto.request.user.UpdateUserRequest;
 import com.duongw.commonservice.model.dto.response.user.UserDetailDTO;
 import com.duongw.commonservice.model.dto.response.user.UserResponseDTO;
+import com.duongw.commonservice.model.entity.UserRole;
 import com.duongw.commonservice.model.entity.Users;
 import com.duongw.commonservice.repository.UserRepository;
 import com.duongw.commonservice.service.IItemService;
 import com.duongw.commonservice.service.IUserRoleService;
 import com.duongw.commonservice.service.IUserService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
@@ -49,6 +53,8 @@ public class UserService implements IUserService {
         userResponseDTO.setStatus(user.getStatus());
         return userResponseDTO;
     }
+
+
 
 
     @Override
@@ -153,25 +159,66 @@ public class UserService implements IUserService {
         userRepository.delete(findUser);
     }
 
+
+    // internal
+
     @Override
     public UserDetailDTO getUserDetail(Long id) {
-        return null;
+        return convertToUserDetailDTO(userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("user.not-found"))));
     }
 
     @Override
     public UserDetailDTO getUserDetailByUsername(String username) {
-        return null;
+        Users user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new ResourceNotFoundException(Translator.toLocate("user.not-found"));
+        }
+        return convertToUserDetailDTO(user);
+
     }
 
+
+    private UserDetailDTO convertToUserDetailDTO(Users user) {
+        UserDetailDTO userDetailDTO = new UserDetailDTO();
+        userDetailDTO.setUserId(user.getUserId());
+        userDetailDTO.setUsername(user.getUsername());
+        userDetailDTO.setEmail(user.getEmail());
+        userDetailDTO.setPassword(user.getPassword());
+        userDetailDTO.setPhoneNumber(user.getPhoneNumber());
+        userDetailDTO.setFirstName(user.getFirstName());
+        userDetailDTO.setLastName(user.getLastName());
+        userDetailDTO.setDepartmentId(user.getDepartmentId());
+        userDetailDTO.setStatus(user.getStatus());
+        userDetailDTO.setRoles(itemService.getRoleByUserId(user.getUserId()));
+        return userDetailDTO;
+    }
+
+    @Transactional
     @Override
     public UserDetailDTO registerUser(CreateUserRequest user) {
-        return null;
+        Users newUser = new Users();
+        newUser.setEmail(user.getEmail());
+        newUser.setUsername(user.getUsername());
+//        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        newUser.setPhoneNumber(user.getPhoneNumber());
+        newUser.setFirstName(user.getFirstName());
+        newUser.setLastName(user.getLastName());
+        newUser.setDepartmentId(user.getDepartmentId());
+        //TODO: set status
+        newUser.setStatus(1L);
+        Users saveUser = userRepository.save(newUser);
+
+        UserRole userRole = new UserRole();
+        userRole.setUserId(newUser.getUserId());
+        userRole.setRoleId(7L);
+        Long userRoleId = userRoleService.save(userRole);
+        return convertToUserDetailDTO(saveUser);
     }
 
     @Override
     public UserDetailDTO updatePassword(String username, String password) {
-        return null;
+        Users user = userRepository.findByUsername(username);
+//        user.setPassword(passwordEncoder.encode(password));
+        return convertToUserDetailDTO(userRepository.save(user));
     }
-
-
 }
