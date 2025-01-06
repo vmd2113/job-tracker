@@ -36,6 +36,7 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        logger.info("API-GATEWAY-SERVICE --> JWT FILTER");
         String path = exchange.getRequest().getURI().getPath();
 
         // Kiểm tra xem đường dẫn có nằm trong white list không
@@ -63,7 +64,7 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         }
 
         // Đảm bảo các claims an toàn
-        String userId = claims.get("id", String.class);
+        String userId = claims.get("userId", String.class);
         String username = claims.getSubject();
         List<String> roles = claims.get("roles", List.class);
         if (roles == null) {

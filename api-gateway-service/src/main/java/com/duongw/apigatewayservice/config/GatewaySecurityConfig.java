@@ -4,6 +4,7 @@ package com.duongw.apigatewayservice.config;
 import com.duongw.apigatewayservice.filter.JwtAuthenticationFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -29,10 +30,12 @@ import java.util.Collections;
 public class GatewaySecurityConfig {
 
     private final PublicRoutes publicRoutes;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Autowired
-    public GatewaySecurityConfig(PublicRoutes publicRoutes) {
+    public GatewaySecurityConfig(PublicRoutes publicRoutes, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.publicRoutes = publicRoutes;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
@@ -62,5 +65,6 @@ public class GatewaySecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
 
 }

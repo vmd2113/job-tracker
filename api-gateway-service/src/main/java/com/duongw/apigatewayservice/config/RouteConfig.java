@@ -35,7 +35,7 @@ public class RouteConfig {
 
                 // Route cho auth API (public, không cần JWT)
                 .route("auth", r -> r.path("/api/v1/auth/**")
-                        .uri("lb://COMMON-SERVICE"))
+                        .uri("lb://AUTH-SERVICE"))
 
                 .route("swagger-ui", r -> r.path("/swagger-ui/**")
                         .uri("lb://COMMON-SERVICE"))
