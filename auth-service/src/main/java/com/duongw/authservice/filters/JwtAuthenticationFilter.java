@@ -49,47 +49,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     /**
      * Extract token from request header or cookies.
      */
-//    private String extractToken(HttpServletRequest request) {
-//        // Check header first
-//        String authorization = request.getHeader(AUTHORIZATION);
-//        if (StringUtils.isNotBlank(authorization) && authorization.startsWith(SystemConstant.BEARER_PREFIX)) {
-//            return authorization.substring(SystemConstant.BEARER_PREFIX.length());
-//        }
-//
-//        // Check cookies if not found in header
-//        Cookie[] cookies = request.getCookies();
-//        if (cookies != null) {
-//            return Arrays.stream(cookies)
-//                    .filter(cookie -> SystemConstant.ACCESS_TOKEN.equals(cookie.getName()))
-//                    .map(Cookie::getValue)
-//                    .findFirst()
-//                    .orElse(null);
-//        }
-//
-//        return null;
-//    }
+
 
     /**
      * Set the authentication in the security context.
      */
-//    private void setAuthentication(String token, HttpServletRequest request) {
-//        String userName = jwtService.extractUsername(token, TokenTypes.ACCESS_TOKEN);
-//        if (StringUtils.isNotEmpty(userName) && SecurityContextHolder.getContext().getAuthentication() == null) {
-//            UserDetails userDetails = userDetailService.loadUserByUsername(userName);
-//            if (jwtService.isValid(token, TokenTypes.ACCESS_TOKEN, userDetails)) {
-//                UsernamePasswordAuthenticationToken authentication =
-//                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-//                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-//                SecurityContextHolder.getContext().setAuthentication(authentication);
-//            }
-//        }
-//    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        log.info("AUTHSERVICE --> doFilterInternal");
+        log.info("AUTH-SERVICE --> doFilterInternal");
         // 1. Skip filter for whitelisted paths
         if (isWhiteList(request)) {
             filterChain.doFilter(request, response);

@@ -1,6 +1,8 @@
 package com.duongw.authservice.service.jwt;
 
 
+import com.duongw.authservice.model.entity.AuthUserDetail;
+import com.duongw.authservice.service.users.CustomUserDetailService;
 import com.duongw.common.exception.InvalidDataException;
 import com.duongw.common.enums.TokenType;
 import io.jsonwebtoken.*;
@@ -90,8 +92,10 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private String extractUserId(UserDetails userDetails) {
-        // Implement based on your UserDetails implementation
-        return userDetails.getUsername(); // Or actual user ID if available
+        if (userDetails instanceof AuthUserDetail) {
+            return ((AuthUserDetail) userDetails).getUserId().toString();
+        }
+        return userDetails.getUsername();
     }
 
     private List<String> extractRoles(UserDetails userDetails) {

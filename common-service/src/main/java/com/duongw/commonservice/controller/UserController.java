@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,7 +34,9 @@ public class UserController {
 
     @GetMapping(path = "/")
     @Operation(summary = "get all data of user", description = "Send a request via this API to get all data of user")
+    @PreAuthorize("hasAuthority('ROLES_ADMIN')")
     public ResponseEntity<ApiResponse<?>> getAllUser() {
+
         List<UserResponseDTO> userList = userService.getAllUser();
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("user.get-all.success"), userList);
         return ResponseEntity.ok(apiResponse);
@@ -42,6 +45,8 @@ public class UserController {
 
     @GetMapping(path = "/{id}")
     @Operation(summary = "find user by id", description = "Send a request via this API to find user by id")
+    @PreAuthorize("hasAuthority('ROLES_ADMIN')")
+
     public ResponseEntity<ApiResponse<?>> getUserById(@PathVariable(name = "id") Long id) {
         UserResponseDTO user = userService.getUserById(id);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("user.get-by-id.success"), user);

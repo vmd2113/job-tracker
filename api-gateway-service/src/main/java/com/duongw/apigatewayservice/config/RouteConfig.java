@@ -1,6 +1,7 @@
 package com.duongw.apigatewayservice.config;
 
 import com.duongw.apigatewayservice.filter.JwtAuthenticationFilter;
+import com.duongw.apigatewayservice.token.JwtService;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -54,7 +55,7 @@ public class RouteConfig {
     }
 
     @Bean
-    public GlobalFilter authenticationFilter(PublicRoutes publicRoutes) {
-        return new JwtAuthenticationFilter(publicRoutes);
+    public GlobalFilter authenticationFilter(PublicRoutes publicRoutes, JwtService jwtService) {
+        return new JwtAuthenticationFilter(jwtService, publicRoutes);
     }
 }

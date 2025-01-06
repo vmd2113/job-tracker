@@ -1,11 +1,10 @@
 package com.duongw.apigatewayservice.filter;
 
 import com.duongw.apigatewayservice.config.PublicRoutes;
+import com.duongw.apigatewayservice.token.JwtService;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -20,26 +19,21 @@ import java.util.List;
 
 @Component
 public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
-
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-    @Value("${jwt.access}")
-    private String secretKey;
-
+    private final com.duongw.apigatewayservice.token.JwtService jwtService;
     private final PublicRoutes publicRoutes;
 
-    public JwtAuthenticationFilter(PublicRoutes publicRoutes) {
+    public JwtAuthenticationFilter(com.duongw.apigatewayservice.token.JwtService jwtService, PublicRoutes publicRoutes) {
+        this.jwtService = jwtService;
         this.publicRoutes = publicRoutes;
     }
-
-
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         logger.info("API-GATEWAY-SERVICE --> JWT FILTER");
         String path = exchange.getRequest().getURI().getPath();
 
-        // Kiểm tra xem đường dẫn có nằm trong white list không
         if (publicRoutes.isWhiteListedRegex(path)) {
             return chain.filter(exchange);
         }
@@ -50,65 +44,42 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
             exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
             return exchange.getResponse().setComplete();
         }
-        if (!isValidToken(token)) {
+
+        if (!jwtService.isValidToken(token)) {
             logger.warn("Invalid JWT token: {}", token);
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
 
-        Claims claims = getClaims(token);
+        Claims claims = jwtService.getClaims(token);
         if (claims == null) {
-            logger.error("Failed to extract claims from JWT token: {}", token);
+            logger.error("Failed to extract claims from JWT token");
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
 
-        // Đảm bảo các claims an toàn
         String userId = claims.get("userId", String.class);
         String username = claims.getSubject();
         List<String> roles = claims.get("roles", List.class);
         if (roles == null) {
-            roles = new ArrayList<>(); // hoặc một giá trị mặc định
+            roles = new ArrayList<>();
         }
 
-        // Log thông tin người dùng khi xác thực thành công
         logger.info("JWT token validated for user: {} with roles: {}", username, String.join(",", roles));
 
-        // Thêm các header vào request để phân quyền trong các microservice
         exchange.getRequest().mutate()
                 .header("X-User-Id", userId)
                 .header("X-Username", username)
                 .header("X-Roles", String.join(",", roles))
                 .build();
 
+        logger.info("Headers added to request {}", exchange.getRequest().getHeaders());
         return chain.filter(exchange);
     }
 
     private String extractToken(ServerWebExchange exchange) {
         String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return null;
-        }
-        return authHeader.substring(7); // Trả về token mà không có "Bearer "
-    }
-
-    private boolean isValidToken(String token) {
-        try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            logger.error("Error parsing JWT token: {}", e.getMessage());
-            return false;
-        }
-    }
-
-    private Claims getClaims(String token) {
-        try {
-            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-        } catch (Exception e) {
-            logger.error("Failed to extract claims from JWT token: {}", e.getMessage());
-            return null;
-        }
+        return (authHeader != null && authHeader.startsWith("Bearer ")) ? authHeader.substring(7) : null;
     }
 
     @Override
