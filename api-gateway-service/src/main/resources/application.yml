@@ -10,14 +10,17 @@ eureka:
     preferIpAddress: true  # Sử dụng địa chỉ IP khi đăng ký service
 
 springdoc:
-  api-docs:
-    enabled: true
   swagger-ui:
     path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
     urls:
-      - name: Common Service
-        url: /v3/api-docs
-
+      - url: /v3/api-docs
+        name: API Gateway
+      - url: /common-service/v3/api-docs
+        name: Common Service
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
 
 spring:
   application:
@@ -28,64 +31,14 @@ spring:
         locator:
           enabled: true  # Cho phép tìm kiếm các service từ Eureka
       routes:
-        # Route cho config-view API
-        - id: config-view
-          uri: lb://COMMON-SERVICE  # Sử dụng Load Balancer để truy cập dịch vụ COMMON-SERVICE
-          predicates:
-            - Path=/api/v1/config-view/**  # Định nghĩa đường dẫn cho route này
-          filters:
-            - StripPrefix=0  # Loại bỏ "/api/v1" khi chuyển tới backend
-
-        # Route cho departments API
-        - id: departments
-          uri: lb://COMMON-SERVICE
-          predicates:
-            - Path=/api/v1/departments/**  # Định nghĩa đường dẫn cho route này
-          filters:
-            - StripPrefix=0
-
-        # Route cho users API
-        - id: users
-          uri: lb://COMMON-SERVICE
-          predicates:
-            - Path=/api/v1/users/**
-          filters:
-            - StripPrefix=0
-
-        # Route cho user-role API
-        - id: user-role
-          uri: lb://COMMON-SERVICE
-          predicates:
-            - Path=/api/v1/user-role/**
-          filters:
-            - StripPrefix=0
-
-        # Route cho categories API
-        - id: categories
-          uri: lb://COMMON-SERVICE
-          predicates:
-            - Path=/api/v1/categories/**
-          filters:
-            - StripPrefix=0
-
-        # Route cho auth API
-        - id: auth
-          uri: lb://COMMON-SERVICE
-          predicates:
-            - Path=/api/v1/auth/**
-          filters:
-            - StripPrefix=0
-        # Route cho swagger API
-        - id: common-service-swagger
-          uri: lb://COMMON-SERVICE
-          predicates:
-            - Path=/v3/api-docs/**, /swagger-ui/**, /swagger-ui.html
-          filters:
-            - RewritePath=/v3/api-docs/(?<segment>.*), /v3/api-docs/$\{segment}
-
+      # Các route sẽ được định nghĩa trong RouteConfig.java
+      # Các route sẽ được xác định qua Eureka, không cần khai báo trực tiếp tại đây
 
 # Logging configuration
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG  # Cấu hình mức độ log cho Gateway
     reactor.netty.http.client: DEBUG  # Cấu hình mức độ log cho client HTTP của Reactor
+
+jwt:
+  access: ${JWT_ACCESS_SECRET:HgnVYeMhlFwCuCaTouYDFDVGUpys5Cm1PRgALsOJfxkDpH1ngbxwC02fMT9HZJf19BeP1wuDe4KQoWtbo2QICQ==}

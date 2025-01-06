@@ -35,6 +35,9 @@ public class SystemConstant {
             "/webjars/**",
             "/swagger-ui/index.html",
             "/actuator/**",
+            "/api/v1/auth/**",
+            "/api/v1/config-view/**",
+            "/api/v1/internal/**"
 
     };
 
