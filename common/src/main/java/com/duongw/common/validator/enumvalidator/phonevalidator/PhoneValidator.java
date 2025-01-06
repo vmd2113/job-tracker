@@ -1,4 +1,4 @@
-package com.duongw.common.validator;
+package com.duongw.common.validator.enumvalidator.phonevalidator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
