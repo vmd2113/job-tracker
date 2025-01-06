@@ -1,4 +1,4 @@
 package com.duongw.authservice.service.jwt;
 
-public class JwtServiceImpl {
+public class JwtServiceImpl implements JwtService {
 }

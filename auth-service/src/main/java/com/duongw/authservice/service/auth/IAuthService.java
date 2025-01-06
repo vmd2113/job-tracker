@@ -1,5 +1,10 @@
 package com.duongw.authservice.service.auth;
 
+import com.duongw.authservice.model.dto.request.SignInRequest;
+import com.duongw.authservice.model.dto.request.SignUpRequest;
+import com.duongw.common.model.dto.response.TokenResponse;
+import jakarta.servlet.http.HttpServletRequest;
+
 public interface IAuthService {
 
     TokenResponse signIn(SignInRequest signInRequest);
