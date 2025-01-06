@@ -3,10 +3,9 @@ package com.duongw.commonservice.service.impl;
 import com.duongw.common.config.i18n.Translator;
 import com.duongw.common.exception.AlreadyExistedException;
 import com.duongw.common.exception.ResourceNotFoundException;
-import com.duongw.commonservice.model.dto.request.user.LoginRequest;
-import com.duongw.commonservice.model.dto.request.user.RegisterUserRequest;
+import com.duongw.commonservice.model.dto.request.user.CreateUserRequest;
 import com.duongw.commonservice.model.dto.request.user.UpdateUserRequest;
-import com.duongw.commonservice.model.dto.response.user.UserLoginResponse;
+import com.duongw.commonservice.model.dto.response.user.UserDetailDTO;
 import com.duongw.commonservice.model.dto.response.user.UserResponseDTO;
 import com.duongw.commonservice.model.entity.Users;
 import com.duongw.commonservice.repository.UserRepository;
@@ -41,6 +40,7 @@ public class UserService implements IUserService {
         UserResponseDTO userResponseDTO = new UserResponseDTO();
         userResponseDTO.setUserId(user.getUserId());
         userResponseDTO.setUsername(user.getUsername());
+        userResponseDTO.setPassword(user.getPassword());
         userResponseDTO.setEmail(user.getEmail());
         userResponseDTO.setPhoneNumber(user.getPhoneNumber());
         userResponseDTO.setFirstName(user.getFirstName());
@@ -89,7 +89,7 @@ public class UserService implements IUserService {
     }
 
 
-    private boolean validateUser(@Valid RegisterUserRequest user) {
+    private boolean validateUser(@Valid CreateUserRequest user) {
 
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new AlreadyExistedException(Translator.toLocate("validate.email.exist"));
@@ -104,7 +104,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserResponseDTO createUser(RegisterUserRequest user) {
+    public UserResponseDTO createUser(CreateUserRequest user) {
 
         if (!validateUser(user)) {
             throw new AlreadyExistedException(Translator.toLocate("user.exist"));
@@ -113,6 +113,7 @@ public class UserService implements IUserService {
         Users newUser = new Users();
         newUser.setEmail(user.getEmail());
         newUser.setUsername(user.getUsername());
+        newUser.setPassword(user.getPassword());
 
         newUser.setPhoneNumber(user.getPhoneNumber());
         newUser.setFirstName(user.getFirstName());
@@ -153,20 +154,24 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserLoginResponse validateUser(LoginRequest loginRequest) {
-        Users user = userRepository.findByUsername(loginRequest.getUsername());
-        if (user == null) {
-            throw new ResourceNotFoundException(Translator.toLocate("user.not-found"));
-        } else {
-            Long roleId = userRoleService.getRoleByUserId(user.getUserId());
-            String role = itemService.getItemById(roleId).getItemName();
-
-            UserLoginResponse userLoginResponse = new UserLoginResponse();
-            userLoginResponse.setUsername(user.getUsername());
-            userLoginResponse.setRole(role);
-            return userLoginResponse;
-
-        }
-      
+    public UserDetailDTO getUserDetail(Long id) {
+        return null;
     }
+
+    @Override
+    public UserDetailDTO getUserDetailByUsername(String username) {
+        return null;
+    }
+
+    @Override
+    public UserDetailDTO registerUser(CreateUserRequest user) {
+        return null;
+    }
+
+    @Override
+    public UserDetailDTO updatePassword(String username, String password) {
+        return null;
+    }
+
+
 }

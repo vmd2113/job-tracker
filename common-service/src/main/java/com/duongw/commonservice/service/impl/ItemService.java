@@ -4,6 +4,7 @@ import com.duongw.common.config.i18n.Translator;
 import com.duongw.commonservice.model.dto.request.item.CreateItemRequest;
 import com.duongw.commonservice.model.dto.request.item.UpdateItemRequest;
 import com.duongw.commonservice.model.dto.response.item.ItemResponseDTO;
+import com.duongw.commonservice.model.dto.response.role.RoleResponse;
 import com.duongw.commonservice.model.entity.Item;
 import com.duongw.commonservice.repository.ItemRepository;
 import com.duongw.commonservice.service.IItemService;
@@ -101,5 +102,20 @@ public class ItemService implements IItemService {
         Item item = itemRepository.findById(id).orElseThrow(() -> new RuntimeException(Translator.toLocate("item.not.found")));
         itemRepository.delete(item);
 
+    }
+
+    @Override
+    public RoleResponse convertToRoleResponseDTO(Long id) {
+        return null;
+    }
+
+    @Override
+    public List<RoleResponse> getAllRoles() {
+        return List.of();
+    }
+
+    @Override
+    public List<RoleResponse> getRoleByUserId(Long userId) {
+        return List.of();
     }
 }

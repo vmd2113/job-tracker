@@ -3,6 +3,7 @@ package com.duongw.commonservice.service;
 import com.duongw.commonservice.model.dto.request.item.CreateItemRequest;
 import com.duongw.commonservice.model.dto.request.item.UpdateItemRequest;
 import com.duongw.commonservice.model.dto.response.item.ItemResponseDTO;
+import com.duongw.commonservice.model.dto.response.role.RoleResponse;
 
 import java.util.List;
 
@@ -19,4 +20,11 @@ public interface IItemService {
     void deleteItem(Long id);
 
 
+    RoleResponse convertToRoleResponseDTO(Long id);
+
+    List<RoleResponse> getAllRoles();
+    List<RoleResponse> getRoleByUserId(Long userId);
 }
+
+
+

@@ -3,10 +3,8 @@ package com.duongw.commonservice.controller;
 import com.duongw.common.constant.ApiPath;
 import com.duongw.common.model.dto.response.ApiResponse;
 import com.duongw.common.config.i18n.Translator;
-import com.duongw.commonservice.model.dto.request.user.LoginRequest;
-import com.duongw.commonservice.model.dto.request.user.RegisterUserRequest;
+import com.duongw.commonservice.model.dto.request.user.CreateUserRequest;
 import com.duongw.commonservice.model.dto.request.user.UpdateUserRequest;
-import com.duongw.commonservice.model.dto.response.user.UserLoginResponse;
 import com.duongw.commonservice.model.dto.response.user.UserResponseDTO;
 import com.duongw.commonservice.service.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -79,7 +77,7 @@ public class UserController {
 
     @PostMapping(path = "/")
     @Operation(summary = "create user", description = "Send a request via this API to create a new user")
-    public ResponseEntity<ApiResponse<?>> createUser(@Valid @RequestBody RegisterUserRequest user) {
+    public ResponseEntity<ApiResponse<?>> createUser(@Valid @RequestBody CreateUserRequest user) {
         UserResponseDTO user1 = userService.createUser(user);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.CREATED, Translator.toLocate("user.create.success"), user1);
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
@@ -103,13 +101,7 @@ public class UserController {
     }
 
 
-    @GetMapping(path = "/validate")
-    @Operation(summary = "validate user", description = "Send a request via this API to validate user")
-    public ResponseEntity<ApiResponse<UserLoginResponse>> validateUser(@RequestBody LoginRequest loginRequest) {
-        UserLoginResponse userLoginResponse = userService.validateUser(loginRequest);
-        ApiResponse<UserLoginResponse> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("user.validate.success"), userLoginResponse);
-        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
-    }
+
 
 
 }

@@ -3,7 +3,6 @@ package com.duongw.commonservice.model.dto.request.user;
 import com.duongw.common.validator.PhoneNumber;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,12 +12,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterUserRequest {
+public class CreateUserRequest {
 
     @NotBlank(message = "{validate.username.fail}")
     private String username;
     @Email(message = "{validate.email.fail}")
     private String email;
+
+
+    private String password;
 
     @PhoneNumber(message = "{validate.phone-number.fail}")
     private String phoneNumber;

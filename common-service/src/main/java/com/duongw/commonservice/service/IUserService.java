@@ -1,9 +1,8 @@
 package com.duongw.commonservice.service;
 
-import com.duongw.commonservice.model.dto.request.user.LoginRequest;
-import com.duongw.commonservice.model.dto.request.user.RegisterUserRequest;
+import com.duongw.commonservice.model.dto.request.user.CreateUserRequest;
 import com.duongw.commonservice.model.dto.request.user.UpdateUserRequest;
-import com.duongw.commonservice.model.dto.response.user.UserLoginResponse;
+import com.duongw.commonservice.model.dto.response.user.UserDetailDTO;
 import com.duongw.commonservice.model.dto.response.user.UserResponseDTO;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public interface IUserService {
 
     UserResponseDTO getUserByPhoneNumber(String phoneNumber);
 
-    UserResponseDTO createUser(RegisterUserRequest user);
+    UserResponseDTO createUser(CreateUserRequest user);
 
     UserResponseDTO updateUser(Long id, UpdateUserRequest user);
 
@@ -27,7 +26,15 @@ public interface IUserService {
 
     void deleteUser(Long id);
 
-    UserLoginResponse validateUser(LoginRequest loginRequest);
+    UserDetailDTO getUserDetail(Long id);
 
+    UserDetailDTO getUserDetailByUsername(String username);
 
+    UserDetailDTO registerUser(CreateUserRequest user);
+
+    UserDetailDTO updatePassword(String username, String password);
 }
+
+
+
+
