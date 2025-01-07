@@ -3,14 +3,18 @@ package com.duongw.commonservice.service.impl;
 import com.duongw.common.config.i18n.Translator;
 import com.duongw.common.exception.AlreadyExistedException;
 import com.duongw.common.exception.ResourceNotFoundException;
+import com.duongw.common.model.dto.response.PageResponse;
+import com.duongw.common.utils.PageResponseConverter;
+import com.duongw.commonservice.model.dto.request.category.SearchCategoryRequest;
 import com.duongw.commonservice.model.dto.request.category.UpdateCategoryRequest;
 import com.duongw.commonservice.model.dto.request.category.CreateCategoryRequest;
 import com.duongw.commonservice.model.dto.response.category.CategoryResponseDTO;
 import com.duongw.commonservice.model.entity.Category;
 import com.duongw.commonservice.repository.CategoryRepository;
 import com.duongw.commonservice.service.ICategoryService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -107,6 +111,17 @@ public class CategoryService implements ICategoryService {
     public void deleteCategory(Long id) {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("category.not.found")));
         categoryRepository.delete(category);
+
+    }
+
+
+
+    @Override
+    public PageResponse<CategoryResponseDTO> searchCategories(String code, String name, Pageable pageable) {
+        // Truy vấn từ repository trả về Page<Category>
+        Page<Category> page = categoryRepository.searchCategories(code, name, pageable);
+        List<CategoryResponseDTO> categoryResponseDTOList = page.getContent().stream().map(this::convertToCategoryResponseDTO).toList();
+        return PageResponseConverter.convertFromList(categoryResponseDTOList, page.getTotalElements());
 
     }
 }

@@ -1,6 +1,6 @@
 package com.duongw.commonservice.model.dto.request.user;
 
-import com.duongw.common.validator.PhoneNumber;
+import com.duongw.common.validator.enumvalidator.phonevalidator.PhoneNumber;
 import lombok.Data;
 
 @Data
