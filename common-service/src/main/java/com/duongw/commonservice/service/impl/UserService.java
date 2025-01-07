@@ -7,6 +7,7 @@ import com.duongw.commonservice.model.dto.request.user.CreateUserRequest;
 import com.duongw.commonservice.model.dto.request.user.UpdateUserRequest;
 import com.duongw.commonservice.model.dto.response.user.UserDetailDTO;
 import com.duongw.commonservice.model.dto.response.user.UserResponseDTO;
+import com.duongw.commonservice.model.entity.UserRole;
 import com.duongw.commonservice.model.entity.Users;
 import com.duongw.commonservice.repository.UserRepository;
 import com.duongw.commonservice.service.IItemService;
@@ -125,6 +126,13 @@ public class UserService implements IUserService {
 
         newUser.setStatus(1L);
         //TODO: set user role
+        UserRole userRole = new UserRole();
+        userRole.setUserId(newUser.getUserId());
+        userRole.setRoleId(7L);
+        userRole.setCreatedByUser(1L);
+        userRole.setUpdatedByUser(1L);
+
+
         return convertToUserResponseDTO(userRepository.save(newUser));
     }
 
@@ -135,6 +143,9 @@ public class UserService implements IUserService {
         updateUser.setLastName(user.getLastName());
         updateUser.setDepartmentId(user.getDepartmentId());
         userRepository.save(updateUser);
+
+        updateUser.setCreatedByUser(1L);
+        updateUser.setUpdatedByUser(1L);
         return convertToUserResponseDTO(updateUser);
     }
 
@@ -144,6 +155,8 @@ public class UserService implements IUserService {
         //TODO: set status
         updateUser.setStatus(1L);
         userRepository.save(updateUser);
+        updateUser.setCreatedByUser(1L);
+        updateUser.setUpdatedByUser(1L);
         return convertToUserResponseDTO(updateUser);
     }
 

@@ -5,10 +5,14 @@ import com.duongw.commonservice.model.dto.response.userrole.UserRoleResponseDTO;
 import com.duongw.commonservice.model.entity.UserRole;
 import com.duongw.commonservice.repository.UserRoleRepository;
 import com.duongw.commonservice.service.IUserRoleService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
+@Slf4j
 public class UserRoleService implements IUserRoleService {
 
     private final UserRoleRepository userRoleRepository;
@@ -32,13 +36,20 @@ public class UserRoleService implements IUserRoleService {
         return convertToUserRoleResponseDTO(userRole);
     }
 
-    @Override
-    public Long getRoleByUserId(Long userId) {
-        UserRole userRole = userRoleRepository.findByUserId(userId);
-        if (userRole == null) {
-            throw new ResourceNotFoundException("UserRole not found");
-        }
-        return userRole.getRoleId();
 
+    @Override
+    public List<Long> getRoleByUserId(Long userId) {
+        log.info("USER_ROLE_SERVICE  -> getRoleByUserId");
+        List<UserRole> userRoleList = userRoleRepository.findAllByUserId(userId);
+        List<Long> roleIdList = userRoleList.stream().map(UserRole::getRoleId).toList();
+        log.info("GET: userIdList: {} ", roleIdList);
+        return roleIdList;
+    }
+
+    @Override
+    public Long save(UserRole userRole) {
+        UserRole saveUserRole = userRoleRepository.save(userRole);
+        log.info("UserRole save success: {}", saveUserRole);
+        return saveUserRole.getId();
     }
 }
