@@ -36,6 +36,9 @@ public class ConfigViewController {
         return ResponseEntity.ok(apiResponse);
     }
 
+
+
+
     @GetMapping(path = "/{id}")
     @Operation(summary = "get data of config view by id", description = "Send a request via this API to get data of config view by id")
 
