@@ -10,6 +10,7 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -21,10 +22,10 @@ import java.util.List;
 public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-    private final com.duongw.apigatewayservice.token.JwtService jwtService;
+    private final JwtService jwtService;
     private final PublicRoutes publicRoutes;
 
-    public JwtAuthenticationFilter(com.duongw.apigatewayservice.token.JwtService jwtService, PublicRoutes publicRoutes) {
+    public JwtAuthenticationFilter(JwtService jwtService, PublicRoutes publicRoutes) {
         this.jwtService = jwtService;
         this.publicRoutes = publicRoutes;
     }
@@ -67,14 +68,22 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 
         logger.info("JWT token validated for user: {} with roles: {}", username, String.join(",", roles));
 
-        exchange.getRequest().mutate()
+        // Tạo request mới
+        ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                 .header("X-User-Id", userId)
                 .header("X-Username", username)
                 .header("X-Roles", String.join(",", roles))
                 .build();
 
-        logger.info("Headers added to request {}", exchange.getRequest().getHeaders());
-        return chain.filter(exchange);
+        // Log kiểm tra headers
+        HttpHeaders headers = mutatedRequest.getHeaders();
+        logger.info("Added custom headers:");
+        logger.info("X-User-Id: {}", headers.getFirst("X-User-Id"));
+        logger.info("X-Username: {}", headers.getFirst("X-Username"));
+        logger.info("X-Roles: {}", headers.getFirst("X-Roles"));
+
+        // Tạo exchange mới và tiếp tục chuỗi filter
+        return chain.filter(exchange.mutate().request(mutatedRequest).build());
     }
 
     private String extractToken(ServerWebExchange exchange) {

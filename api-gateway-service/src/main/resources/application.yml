@@ -23,10 +23,30 @@ springdoc:
     path: /v3/api-docs
 
 spring:
-  application:
-    name: api-gateway-service  # Tên của API Gateway Service
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+      globalcors:
+        add-to-simple-url-handler-mapping: true  # Thêm dòng này
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:8080"
+              - "http://localhost:3000"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            exposedHeaders:
+              - X-User-Id
+              - X-Username
+              - X-Roles
+            allowCredentials: true
+            maxAge: 3600
       discovery:
         locator:
           enabled: true  # Cho phép tìm kiếm các service từ Eureka
@@ -34,6 +54,7 @@ spring:
       # Các route sẽ được định nghĩa trong RouteConfig.java
       # Các route sẽ được xác định qua Eureka, không cần khai báo trực tiếp tại đây
 
+     
 # Logging configuration
 logging:
   level:

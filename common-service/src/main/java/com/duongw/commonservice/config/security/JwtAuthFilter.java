@@ -44,13 +44,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         logger.info("COMMON-SERVICE do filter");
         // Lấy thông tin user từ header đã được API Gateway xử lý
-        String username = request.getHeader("X-User-Name");
-        String roles = request.getHeader("X-User-Roles");
+        String username = request.getHeader("X-Username");
+        String roles = request.getHeader("X-Roles");
         String userId = request.getHeader("X-User-Id");
 
 
         logger.info(username);
         logger.info(roles);
+        logger.info(userId);
         if (username != null && roles != null) {
             List<GrantedAuthority> authorities = Arrays.stream(roles.split(","))
                     .map(SimpleGrantedAuthority::new)
