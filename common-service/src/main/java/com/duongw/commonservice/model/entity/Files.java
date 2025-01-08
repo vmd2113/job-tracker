@@ -2,10 +2,7 @@ package com.duongw.commonservice.model.entity;
 
 import com.duongw.common.model.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 
 public class Files extends BaseEntity {
     @Id
@@ -34,7 +32,7 @@ public class Files extends BaseEntity {
     private String businessCode;
 
     @Column(name = "BUSINESS_ID")
-    private String businessId;
+    private Long businessId;
 
     @Column(name = "STATUS")
     private Long status;

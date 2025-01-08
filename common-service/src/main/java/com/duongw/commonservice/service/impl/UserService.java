@@ -131,6 +131,13 @@ public class UserService implements IUserService {
 
         newUser.setStatus(1L);
         //TODO: set user role
+        UserRole userRole = new UserRole();
+        userRole.setUserId(newUser.getUserId());
+        userRole.setRoleId(7L);
+        userRole.setCreatedByUser(1L);
+        userRole.setUpdatedByUser(1L);
+
+
         return convertToUserResponseDTO(userRepository.save(newUser));
     }
 
@@ -141,6 +148,9 @@ public class UserService implements IUserService {
         updateUser.setLastName(user.getLastName());
         updateUser.setDepartmentId(user.getDepartmentId());
         userRepository.save(updateUser);
+
+        updateUser.setCreatedByUser(1L);
+        updateUser.setUpdatedByUser(1L);
         return convertToUserResponseDTO(updateUser);
     }
 
@@ -150,6 +160,8 @@ public class UserService implements IUserService {
         //TODO: set status
         updateUser.setStatus(1L);
         userRepository.save(updateUser);
+        updateUser.setCreatedByUser(1L);
+        updateUser.setUpdatedByUser(1L);
         return convertToUserResponseDTO(updateUser);
     }
 
