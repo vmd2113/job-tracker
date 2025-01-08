@@ -7,6 +7,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface IFileService {
+
+    void storeFiles(List<MultipartFile> files, String businessCode, String businessId);
+
     FileResponseDTO saveFile(FileUploadRequest fileUploadRequest);
 
     List<FileResponseDTO> getAllFile();
@@ -20,7 +23,4 @@ public interface IFileService {
     byte[] downloadFile(Long fileId);
 
     void deleteFilesByBusinessCode(String businessCode);
-
-    void storeFiles(List<MultipartFile> files, String businessCode, String businessId);
-
 }

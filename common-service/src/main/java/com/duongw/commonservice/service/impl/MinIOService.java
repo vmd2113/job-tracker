@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @Service
 @Slf4j
+
 public class MinIOService implements IMinIOService {
 
     private static final String BUCKET_NAME = "job-tracker";
@@ -91,6 +92,7 @@ public class MinIOService implements IMinIOService {
             }
         }
     }
+
 
     @Override
     public boolean isFileExist(String filePath) {

@@ -17,4 +17,5 @@ public interface FileRepository extends JpaRepository<Files, Long> {
 
     void deleteByBusinessId(Long businessId);
     void deleteByBusinessCode(String businessCode);
+
 }

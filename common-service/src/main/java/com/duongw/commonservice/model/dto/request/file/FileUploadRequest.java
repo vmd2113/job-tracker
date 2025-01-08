@@ -21,6 +21,8 @@ public class FileUploadRequest {
 
     private Long businessId;
 
-    private Long status;
+    private Long status = 1L;
 
+    public FileUploadRequest(String fileName, String s, String businessCode, Object o) {
+    }
 }
