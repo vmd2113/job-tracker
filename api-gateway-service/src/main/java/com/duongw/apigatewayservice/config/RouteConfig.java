@@ -34,6 +34,9 @@ public class RouteConfig {
                 .route("categories", r -> r.path("/api/v1/categories/**")
                         .uri("lb://COMMON-SERVICE"))
 
+                .route("categories", r -> r.path("/api/v1/files/**")
+                        .uri("lb://COMMON-SERVICE"))
+
                 // Route cho auth API (public, không cần JWT)
                 .route("auth", r -> r.path("/api/v1/auth/**")
                         .uri("lb://AUTH-SERVICE"))
