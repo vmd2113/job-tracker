@@ -3,12 +3,18 @@ package com.duongw.commonservice.controller;
 import com.duongw.common.config.i18n.Translator;
 import com.duongw.common.constant.ApiPath;
 import com.duongw.common.model.dto.response.ApiResponse;
+import com.duongw.common.model.dto.response.PageResponse;
+import com.duongw.commonservice.model.dto.request.category.SearchCategoryRequest;
 import com.duongw.commonservice.model.dto.request.category.UpdateCategoryRequest;
 import com.duongw.commonservice.model.dto.request.category.CreateCategoryRequest;
 import com.duongw.commonservice.model.dto.response.category.CategoryResponseDTO;
+import com.duongw.commonservice.model.entity.Category;
 import com.duongw.commonservice.service.ICategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -89,5 +95,23 @@ public class CategoryController {
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<?>> searchCategories(@RequestParam(required = false) String categoryCode,
+                                                           @RequestParam(required = false) String categoryName,
+                                                           @RequestParam(value = "page", defaultValue = "0") int page,
+                                                           @RequestParam(value = "size", defaultValue = "10") int size,
+                                                           @RequestParam(value = "sort", defaultValue = "updateDate,desc", required = false) String sort) {
+        // Convert "sort" parameter into Pageable
+        String[] sortParams = sort.split(",");
+        Sort.Order order = new Sort.Order(Sort.Direction.fromString(sortParams[1]), sortParams[0]);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(order));
+
+        PageResponse<CategoryResponseDTO> pageResponse = categoryService.searchCategories(categoryCode, categoryName, pageable);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, "search category success", pageResponse);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+
+    }
+
 
 }

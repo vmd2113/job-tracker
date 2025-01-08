@@ -9,7 +9,7 @@ public final class ApiPath {
     public static final String API_PATH_VERSION = API_PATH + API_VERSION;
 
     public static final String API_CONFIG_VIEW = API_PATH_VERSION + "/config-view";
-
+    public static final String API_FILE = API_PATH_VERSION + "/files";
     public static final String API_USER = API_PATH_VERSION + "/users";
     public static final String API_USER_ROLE = API_PATH_VERSION + "/user-role";
     public static final String API_CATEGORY = API_PATH_VERSION + "/categories";
