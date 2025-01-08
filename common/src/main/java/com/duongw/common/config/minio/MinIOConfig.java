@@ -1,5 +1,8 @@
 package com.duongw.common.config.minio;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
@@ -10,39 +13,31 @@ import io.minio.MinioClient;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@RequiredArgsConstructor
+@Slf4j
 public class MinIOConfig {
-
-    @Value("${minio.url}")
-    private String url;
-
-    @Value("${minio.access-key}")
-    private String accessKey;
-
-    @Value("${minio.secret-key}")
-    private String secretKey;
-
-    @Value("${minio.bucket-name}")
-    private String bucketName;
+    private final MinioProperties minioProperties;
 
     @Bean
     public MinioClient minioClient() {
         MinioClient minioClient = MinioClient.builder()
-                .endpoint(url)
-                .credentials(accessKey, secretKey)
+                .endpoint(minioProperties.getUrl())
+                .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
                 .build();
 
         try {
-            // Kiểm tra và tạo bucket trong method này luôn
             boolean found = minioClient.bucketExists(BucketExistsArgs.builder()
-                    .bucket(bucketName)
+                    .bucket(minioProperties.getBucketName())
                     .build());
             if (!found) {
                 minioClient.makeBucket(MakeBucketArgs.builder()
-                        .bucket(bucketName)
+                        .bucket(minioProperties.getBucketName())
                         .build());
             }
+            log.info("Successfully initialized MinIO bucket: {}", minioProperties.getBucketName());
         } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize MinIO bucket: " + e.getMessage(), e);
+            log.error("Failed to initialize MinIO bucket: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to initialize MinIO bucket", e);
         }
 
         return minioClient;

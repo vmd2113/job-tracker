@@ -189,6 +189,17 @@ public class GlobalExceptionHandler {
         return error;
     }
 
+    @ExceptionHandler(FileStorageException.class)
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleFileStorageException(FileStorageException ex, WebRequest request) {
+        ErrorResponse error = createBaseErrorResponse(request, INTERNAL_SERVER_ERROR);
+        error.setError("File Storage Error");
+        error.setMessage("Failed to store file in MinIO. Please try again.");
+        log.error("File storage error", ex);
+        return error;
+    }
+
+ 
     // Fallback handler for any unhandled exceptions
     @ExceptionHandler(Exception.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)

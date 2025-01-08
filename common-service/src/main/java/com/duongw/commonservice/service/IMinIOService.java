@@ -2,10 +2,18 @@ package com.duongw.commonservice.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface IMinIOService {
 
-    String uploadFile(MultipartFile file, String businessCode, String businessId);
-    byte[] downloadFile(String filePath);
-    void deleteFile(String filePath);
+
+
+
+    String uploadToMinIO(MultipartFile file, String businessCode);
+
+    byte[] downloadFromMinIO(String filePath);
+
+    void deleteFromMinIO(String filePath);
+
     boolean isFileExist(String filePath);
 }
