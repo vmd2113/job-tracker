@@ -1,12 +1,14 @@
 package com.duongw.commonservice.model.dto.request.file;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class FileUploadRequest {
 
     private Long fieldId;

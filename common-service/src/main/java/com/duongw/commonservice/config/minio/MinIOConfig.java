@@ -1,15 +1,15 @@
-package com.duongw.common.config.minio;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-
+package com.duongw.commonservice.config.minio;
 
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@Slf4j
 public class MinIOConfig {
 
     @Value("${minio.url}")
@@ -41,6 +41,8 @@ public class MinIOConfig {
                         .bucket(bucketName)
                         .build());
             }
+
+            log.info("Successfully initialized MinIO bucket: {}", bucketName);
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize MinIO bucket: " + e.getMessage(), e);
         }
