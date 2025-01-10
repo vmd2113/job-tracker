@@ -1,5 +1,6 @@
 package com.duongw.commonservice.service;
 
+import com.duongw.common.model.dto.response.PageResponse;
 import com.duongw.commonservice.model.dto.request.user.CreateUserRequest;
 import com.duongw.commonservice.model.dto.request.user.UpdateUserRequest;
 import com.duongw.commonservice.model.dto.response.user.UserDetailDTO;
@@ -33,6 +34,21 @@ public interface IUserService {
     UserDetailDTO registerUser(CreateUserRequest user);
 
     UserDetailDTO updatePassword(String username, String password);
+
+    PageResponse<?> searchUserByCriteria(
+
+            int pageNo,
+            int pageSize,
+
+            String usernameSearch,
+            String emailSearch,
+            String phoneNumberSearch,
+            String firstNameSearch,
+
+            String sortBy,
+            String sortDirection
+
+    );
 }
 
 

@@ -11,6 +11,7 @@ import com.duongw.commonservice.model.dto.response.category.CategoryResponseDTO;
 import com.duongw.commonservice.model.entity.Category;
 import com.duongw.commonservice.service.ICategoryService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = ApiPath.API_CATEGORY)
+@Slf4j
 public class CategoryController {
 
     private final ICategoryService categoryService;
@@ -36,6 +38,7 @@ public class CategoryController {
     @Operation(summary = "get all data of category", description = "Send a request via this API to get all data of category")
 
     public ResponseEntity<ApiResponse<?>> getAllCategory() {
+        log.info("CATEGORY_CONTROLLER  -> getAllCategory");
         List<CategoryResponseDTO> categoryList = categoryService.getAllCategory();
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("category.get-all.success"), categoryList);
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
@@ -46,7 +49,7 @@ public class CategoryController {
     @Operation(summary = "get category by id", description = "Send a request via this API to get data of category by id")
 
     public ResponseEntity<ApiResponse<?>> getCategoryById(@PathVariable(name = "id") Long id) {
-
+        log.info("CATEGORY_CONTROLLER  -> getCategoryById");
         CategoryResponseDTO category = categoryService.getCategoryById(id);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, "get category by id success", category);
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
@@ -57,7 +60,7 @@ public class CategoryController {
     @Operation(summary = "get data of category by name", description = "Send a request via this API to get  data of category by name")
 
     public ResponseEntity<ApiResponse<?>> getCategoryByName(@RequestParam(name = "name") String name) {
-
+        log.info("CATEGORY_CONTROLLER  -> getCategoryByName");
         CategoryResponseDTO category = categoryService.getCategoryByName(name);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, "get category by name success", category);
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
@@ -68,7 +71,7 @@ public class CategoryController {
     @Operation(summary = "create and add a category ", description = "Send a request via this API to create a new category")
 
     public ResponseEntity<ApiResponse<?>> createCategory(@RequestBody CreateCategoryRequest category) {
-
+        log.info("CATEGORY_CONTROLLER  -> createCategory");
         CategoryResponseDTO category1 = categoryService.createCategory(category);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.CREATED, "create category success", category1);
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
@@ -78,7 +81,7 @@ public class CategoryController {
     @PutMapping(path = "/{id}")
     @Operation(summary = "update category by id", description = "Send a request via this API to update category by id")
     public ResponseEntity<ApiResponse<?>> updateCategory(@PathVariable(name = "id") Long id, @RequestBody UpdateCategoryRequest category) {
-
+        log.info("CATEGORY_CONTROLLER  -> updateCategory");
         CategoryResponseDTO category1 = categoryService.updateCategory(id, category);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("category.update.success"), category1);
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
@@ -88,7 +91,7 @@ public class CategoryController {
     @DeleteMapping(path = "/{id}")
     @Operation(summary = "delete category by id", description = "Send a request via this API to delete category by id")
     public ResponseEntity<ApiResponse<?>> deleteCategory(@PathVariable(name = "id") Long id) {
-
+        log.info("CATEGORY_CONTROLLER  -> deleteCategory");
         categoryService.deleteCategory(id);
 
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, "delete category success");
@@ -103,6 +106,7 @@ public class CategoryController {
                                                            @RequestParam(value = "size", defaultValue = "10") int size,
                                                            @RequestParam(value = "sort", defaultValue = "updateDate,desc", required = false) String sort) {
         // Convert "sort" parameter into Pageable
+        log.info("CATEGORY_CONTROLLER  -> searchCategories");
         String[] sortParams = sort.split(",");
         Sort.Order order = new Sort.Order(Sort.Direction.fromString(sortParams[1]), sortParams[0]);
         Pageable pageable = PageRequest.of(page, size, Sort.by(order));

@@ -3,6 +3,7 @@ package com.duongw.commonservice.controller;
 import com.duongw.common.constant.ApiPath;
 import com.duongw.common.model.dto.response.ApiResponse;
 import com.duongw.common.config.i18n.Translator;
+import com.duongw.common.model.dto.response.PageResponse;
 import com.duongw.commonservice.model.dto.request.user.CreateUserRequest;
 import com.duongw.commonservice.model.dto.request.user.UpdateUserRequest;
 import com.duongw.commonservice.model.dto.response.user.UserResponseDTO;
@@ -79,6 +80,26 @@ public class UserController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @GetMapping(path = "/search")
+    @Operation(summary = "search user by criteria", description = "Send a request via this API to search user by criteria")
+    @PreAuthorize("hasAuthority('ROLES_ADMIN')")
+    public ResponseEntity<ApiResponse<?>> searchUserByCriteria(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                               @RequestParam(name = "size", defaultValue = "2") int size,
+
+                                                               @RequestParam(name = "username", required = false) String usernameSearch,
+                                                               @RequestParam(name = "email", required = false) String emailSearch,
+                                                               @RequestParam(name = "phoneNumber", required = false) String phoneNumberSearch,
+                                                               @RequestParam(name = "firstname", required = false) String firstNameSearch,
+
+                                                               @RequestParam(name = "sortBy", required = false) String sortBy,
+                                                               @RequestParam(name = "sortDirection", required = false) String sortDirection) {
+
+        PageResponse<?> pageResponse = userService.searchUserByCriteria(page, size, usernameSearch, emailSearch, phoneNumberSearch, firstNameSearch, sortBy, sortDirection);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("user.get-by-phone-number.success"), pageResponse);
+        return ResponseEntity.ok(apiResponse);
+
+    }
+
 
     @PostMapping(path = "/")
     @Operation(summary = "create user", description = "Send a request via this API to create a new user")
@@ -104,9 +125,6 @@ public class UserController {
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.NO_CONTENT, Translator.toLocate("user.delete.success"));
         return new ResponseEntity<>(apiResponse, HttpStatus.NO_CONTENT);
     }
-
-
-
 
 
 }

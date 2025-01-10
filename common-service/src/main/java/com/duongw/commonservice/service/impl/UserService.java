@@ -3,6 +3,7 @@ package com.duongw.commonservice.service.impl;
 import com.duongw.common.config.i18n.Translator;
 import com.duongw.common.exception.AlreadyExistedException;
 import com.duongw.common.exception.ResourceNotFoundException;
+import com.duongw.common.model.dto.response.PageResponse;
 import com.duongw.commonservice.model.dto.request.user.CreateUserRequest;
 import com.duongw.commonservice.model.dto.request.user.UpdateUserRequest;
 import com.duongw.commonservice.model.dto.response.user.UserDetailDTO;
@@ -10,6 +11,7 @@ import com.duongw.commonservice.model.dto.response.user.UserResponseDTO;
 import com.duongw.commonservice.model.entity.UserRole;
 import com.duongw.commonservice.model.entity.Users;
 import com.duongw.commonservice.repository.UserRepository;
+import com.duongw.commonservice.repository.search.UserSearchRepository;
 import com.duongw.commonservice.service.IItemService;
 import com.duongw.commonservice.service.IUserRoleService;
 import com.duongw.commonservice.service.IUserService;
@@ -28,13 +30,15 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final IUserRoleService userRoleService;
     private final IItemService itemService;
+    private final UserSearchRepository userSearchRepository;
 
 
     @Autowired
-    public UserService(UserRepository userRepository, IUserRoleService userRoleService, IItemService itemService) {
+    public UserService(UserRepository userRepository, IUserRoleService userRoleService, IItemService itemService, UserSearchRepository userSearchRepository) {
         this.userRepository = userRepository;
         this.userRoleService = userRoleService;
         this.itemService = itemService;
+        this.userSearchRepository = userSearchRepository;
     }
 
     private UserResponseDTO convertToUserResponseDTO(Users user) {
@@ -96,6 +100,7 @@ public class UserService implements IUserService {
 
 
     private boolean validateUser(@Valid CreateUserRequest user) {
+        log.info("USER_SERVICE  -> validateUser");
 
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new AlreadyExistedException(Translator.toLocate("validate.email.exist"));
@@ -111,6 +116,7 @@ public class UserService implements IUserService {
 
     @Override
     public UserResponseDTO createUser(CreateUserRequest user) {
+        log.info("USER_SERVICE  -> createUser");
 
         if (!validateUser(user)) {
             throw new AlreadyExistedException(Translator.toLocate("user.exist"));
@@ -143,6 +149,7 @@ public class UserService implements IUserService {
 
     @Override
     public UserResponseDTO updateUser(Long id, UpdateUserRequest user) {
+        log.info("USER_SERVICE  -> updateUser");
         Users updateUser = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("user.not-found")));
         updateUser.setFirstName(user.getFirstName());
         updateUser.setLastName(user.getLastName());
@@ -156,6 +163,7 @@ public class UserService implements IUserService {
 
     @Override
     public UserResponseDTO updateUserStatus(Long id, String status) {
+        log.info("USER_SERVICE  -> updateUserStatus");
         Users updateUser = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("user.not-found")));
         //TODO: set status
         updateUser.setStatus(1L);
@@ -167,6 +175,7 @@ public class UserService implements IUserService {
 
     @Override
     public void deleteUser(Long id) {
+        log.info("USER_SERVICE  -> deleteUser");
         Users findUser = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("user.not-found")));
         userRepository.delete(findUser);
     }
@@ -181,6 +190,7 @@ public class UserService implements IUserService {
 
     @Override
     public UserDetailDTO getUserDetailByUsername(String username) {
+        log.info("USER_SERVICE  -> getUserDetailByUsername");
         Users user = userRepository.findByUsername(username);
         if (user == null) {
             throw new ResourceNotFoundException(Translator.toLocate("user.not-found"));
@@ -191,6 +201,7 @@ public class UserService implements IUserService {
 
 
     private UserDetailDTO convertToUserDetailDTO(Users user) {
+        log.info("USER_SERVICE  -> convertToUserDetailDTO");
         UserDetailDTO userDetailDTO = new UserDetailDTO();
         userDetailDTO.setUserId(user.getUserId());
         userDetailDTO.setUsername(user.getUsername());
@@ -208,6 +219,7 @@ public class UserService implements IUserService {
     @Transactional
     @Override
     public UserDetailDTO registerUser(CreateUserRequest user) {
+        log.info("USER_SERVICE  -> registerUser");
         Users newUser = new Users();
         newUser.setEmail(user.getEmail());
         newUser.setUsername(user.getUsername());
@@ -229,8 +241,15 @@ public class UserService implements IUserService {
 
     @Override
     public UserDetailDTO updatePassword(String username, String password) {
+        log.info("USER_SERVICE  -> updatePassword");
         Users user = userRepository.findByUsername(username);
 //        user.setPassword(passwordEncoder.encode(password));
         return convertToUserDetailDTO(userRepository.save(user));
+    }
+
+    @Override
+    public PageResponse<?> searchUserByCriteria(int pageNo, int pageSize, String usernameSearch, String emailSearch, String phoneNumberSearch, String firstNameSearch, String sortBy, String sortDirection) {
+        log.info("USER_SERVICE  -> searchUserByCriteria");
+        return userSearchRepository.searchUserByCriteria(pageNo, pageSize, usernameSearch, emailSearch, phoneNumberSearch, firstNameSearch, sortBy, sortDirection);
     }
 }

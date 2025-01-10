@@ -23,6 +23,11 @@ public class SystemConstant {
     public static final String RESPONSE_TYPE = "response_type";
     public static final String STATE = "state";
 
+
+    final String LIKE_FORMAT = "%%%s%%";
+    final String SORT_BY = "(\\w+?)(:)(.*)";
+    final String SEARCH_OPERATOR = "(\\w+?)(:|<|>|>=|<=)(.*)";
+
     public static final String[] WHITE_LIST = {
             "/api/v1/auth/**",
             "/v3/api-docs",

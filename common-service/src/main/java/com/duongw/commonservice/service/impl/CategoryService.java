@@ -118,7 +118,7 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public PageResponse<CategoryResponseDTO> searchCategories(String code, String name, Pageable pageable) {
-        // Truy vấn từ repository trả về Page<Category>
+
         Page<Category> page = categoryRepository.searchCategories(code, name, pageable);
         List<CategoryResponseDTO> categoryResponseDTOList = page.getContent().stream().map(this::convertToCategoryResponseDTO).toList();
         return PageResponseConverter.convertFromList(categoryResponseDTOList, page.getTotalElements());

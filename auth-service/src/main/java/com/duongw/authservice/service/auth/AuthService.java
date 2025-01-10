@@ -95,7 +95,6 @@ public class AuthService implements IAuthService {
                 .refreshToken(refreshToken)
                 .userId(user.getUserId())
                 .roles(user.getRoles().stream().map(RoleResponseDTO::getRoleCode).toList())
-                .message("Sign in successful")
                 .build();
 
     }

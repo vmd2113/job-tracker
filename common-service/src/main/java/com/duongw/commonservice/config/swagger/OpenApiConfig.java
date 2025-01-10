@@ -23,7 +23,7 @@ public class OpenApiConfig {
                         .description("API Documentation for Common Service")
                         .license(new License()
                                 .name("API license")
-                                .url("http://domain.vn/license"))
+                                .url("https://domain.vn/license"))
                 )
                 .servers(List.of(
                         new Server()

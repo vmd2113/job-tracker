@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping(path = ApiPath.API_ITEM)
 public class ItemController {
 
-    private IItemService itemService;
+    private final  IItemService itemService;
 
     @Autowired
     public ItemController(IItemService itemService) {

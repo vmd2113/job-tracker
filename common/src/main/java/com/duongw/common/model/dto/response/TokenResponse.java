@@ -18,5 +18,4 @@ public class TokenResponse {
     private List<String> roles;
 
 
-    private String message;
 }
