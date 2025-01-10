@@ -51,29 +51,27 @@ public class CategoryController {
     public ResponseEntity<ApiResponse<?>> getCategoryById(@PathVariable(name = "id") Long id) {
         log.info("CATEGORY_CONTROLLER  -> getCategoryById");
         CategoryResponseDTO category = categoryService.getCategoryById(id);
-        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, "get category by id success", category);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("category.get-by-id.success"), category);
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 
     }
 
     @GetMapping(path = "/name")
     @Operation(summary = "get data of category by name", description = "Send a request via this API to get  data of category by name")
-
     public ResponseEntity<ApiResponse<?>> getCategoryByName(@RequestParam(name = "name") String name) {
         log.info("CATEGORY_CONTROLLER  -> getCategoryByName");
         CategoryResponseDTO category = categoryService.getCategoryByName(name);
-        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, "get category by name success", category);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("category.get-by-name.success"), category);
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 
     }
 
     @PostMapping(path = "/")
     @Operation(summary = "create and add a category ", description = "Send a request via this API to create a new category")
-
     public ResponseEntity<ApiResponse<?>> createCategory(@RequestBody CreateCategoryRequest category) {
         log.info("CATEGORY_CONTROLLER  -> createCategory");
         CategoryResponseDTO category1 = categoryService.createCategory(category);
-        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.CREATED, "create category success", category1);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.CREATED, Translator.toLocate("category.create.success"), category1);
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
 
     }
@@ -93,15 +91,16 @@ public class CategoryController {
     public ResponseEntity<ApiResponse<?>> deleteCategory(@PathVariable(name = "id") Long id) {
         log.info("CATEGORY_CONTROLLER  -> deleteCategory");
         categoryService.deleteCategory(id);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.NO_CONTENT, Translator.toLocate("category.delete.success"));
 
-        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, "delete category success");
-        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+        log.info("CATEGORY_CONTROLLER  -> deleteCategory success");
+        return new ResponseEntity<>(apiResponse, HttpStatus.NO_CONTENT);
 
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<?>> searchCategories(@RequestParam(required = false) String categoryCode,
-                                                           @RequestParam(required = false) String categoryName,
+    public ResponseEntity<ApiResponse<?>> searchCategories(@RequestParam(required = false, name = "code") String categoryCode,
+                                                           @RequestParam(required = false, name = "name") String categoryName,
                                                            @RequestParam(value = "page", defaultValue = "0") int page,
                                                            @RequestParam(value = "size", defaultValue = "10") int size,
                                                            @RequestParam(value = "sort", defaultValue = "updateDate,desc", required = false) String sort) {
@@ -112,7 +111,8 @@ public class CategoryController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(order));
 
         PageResponse<CategoryResponseDTO> pageResponse = categoryService.searchCategories(categoryCode, categoryName, pageable);
-        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, "search category success", pageResponse);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("category.search.success"), pageResponse);
+        log.info("CATEGORY_CONTROLLER  -> searchCategories success");
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 
     }

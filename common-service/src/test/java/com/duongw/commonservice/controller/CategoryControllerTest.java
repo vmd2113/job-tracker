@@ -1,4 +1,4 @@
-package com.duongw.eurekaserver.controller;
+package com.duongw.commonservice.controller;
 
 public class CategoryControllerTest {
 }

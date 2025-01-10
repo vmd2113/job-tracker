@@ -8,4 +8,5 @@ public interface IMinIOService {
     byte[] downloadFromMinIO(String filePath);
     void deleteFromMinIO(String filePath);
     boolean isFileExist(String filePath);
+
 }

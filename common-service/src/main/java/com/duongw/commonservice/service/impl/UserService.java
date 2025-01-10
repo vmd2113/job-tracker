@@ -18,6 +18,7 @@ import com.duongw.commonservice.service.IUserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,14 +32,16 @@ public class UserService implements IUserService {
     private final IUserRoleService userRoleService;
     private final IItemService itemService;
     private final UserSearchRepository userSearchRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Autowired
-    public UserService(UserRepository userRepository, IUserRoleService userRoleService, IItemService itemService, UserSearchRepository userSearchRepository) {
+    public UserService(UserRepository userRepository, IUserRoleService userRoleService, IItemService itemService, UserSearchRepository userSearchRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userRoleService = userRoleService;
         this.itemService = itemService;
         this.userSearchRepository = userSearchRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     private UserResponseDTO convertToUserResponseDTO(Users user) {
@@ -55,19 +58,21 @@ public class UserService implements IUserService {
         userResponseDTO.setLastName(user.getLastName());
         userResponseDTO.setDepartmentId(user.getDepartmentId());
         userResponseDTO.setStatus(user.getStatus());
+        log.info("USER_SERVICE  -> convertToUserResponseDTO");
+        log.info("UserResponseDTO: {}", userResponseDTO);
         return userResponseDTO;
     }
 
 
-
-
     @Override
     public List<UserResponseDTO> getAllUser() {
+        log.info("USER_SERVICE  -> getAllUser");
         return userRepository.findAll().stream().map(this::convertToUserResponseDTO).toList();
     }
 
     @Override
     public UserResponseDTO getUserById(Long id) {
+        log.info("USER_SERVICE  -> getUserById");
         Users user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("user.not-found")));
         return convertToUserResponseDTO(user);
     }
@@ -75,9 +80,11 @@ public class UserService implements IUserService {
     @Override
     public UserResponseDTO getUserByUsername(String username) {
         try {
+            log.info("USER_SERVICE  -> getUserByUsername");
             Users user = userRepository.findByUsername(username);
             return convertToUserResponseDTO(user);
         } catch (Exception e) {
+            log.error("USER_SERVICE  -> getUserByUsername fail");
             throw new ResourceNotFoundException(Translator.toLocate("user.not-found"));
         }
     }
@@ -85,9 +92,11 @@ public class UserService implements IUserService {
     @Override
     public UserResponseDTO getUserByEmail(String email) {
         try {
+            log.info("USER_SERVICE  -> getUserByEmail");
             Users user = userRepository.findByEmail(email);
             return convertToUserResponseDTO(user);
         } catch (Exception e) {
+            log.error("USER_SERVICE  -> getUserByEmail fail");
             throw new ResourceNotFoundException(Translator.toLocate("user.not-found"));
         }
     }
@@ -119,31 +128,34 @@ public class UserService implements IUserService {
         log.info("USER_SERVICE  -> createUser");
 
         if (!validateUser(user)) {
+            log.error("USER_SERVICE  -> createUser fail");
             throw new AlreadyExistedException(Translator.toLocate("user.exist"));
         }
 
         Users newUser = new Users();
         newUser.setEmail(user.getEmail());
         newUser.setUsername(user.getUsername());
-        newUser.setPassword(user.getPassword());
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
 
         newUser.setPhoneNumber(user.getPhoneNumber());
         newUser.setFirstName(user.getFirstName());
         newUser.setLastName(user.getLastName());
         newUser.setDepartmentId(user.getDepartmentId());
+
         //TODO: set status
 //        newUser.setStatus(user.getStatus());
 
 
         newUser.setStatus(1L);
+        log.info("USER_SERVICE  -> createUser");
         //TODO: set user role
         UserRole userRole = new UserRole();
         userRole.setUserId(newUser.getUserId());
         userRole.setRoleId(7L);
         userRole.setCreatedByUser(1L);
         userRole.setUpdatedByUser(1L);
-
-
+        log.info("USER_SERVICE  -> create user role");
+        log.info("USER_SERVICE  -> create user success");
         return convertToUserResponseDTO(userRepository.save(newUser));
     }
 
@@ -193,6 +205,7 @@ public class UserService implements IUserService {
         log.info("USER_SERVICE  -> getUserDetailByUsername");
         Users user = userRepository.findByUsername(username);
         if (user == null) {
+            log.error("USER_SERVICE  -> getUserDetailByUsername fail");
             throw new ResourceNotFoundException(Translator.toLocate("user.not-found"));
         }
         return convertToUserDetailDTO(user);
@@ -223,7 +236,7 @@ public class UserService implements IUserService {
         Users newUser = new Users();
         newUser.setEmail(user.getEmail());
         newUser.setUsername(user.getUsername());
-//        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         newUser.setPhoneNumber(user.getPhoneNumber());
         newUser.setFirstName(user.getFirstName());
         newUser.setLastName(user.getLastName());
@@ -236,6 +249,7 @@ public class UserService implements IUserService {
         userRole.setUserId(newUser.getUserId());
         userRole.setRoleId(7L);
         Long userRoleId = userRoleService.save(userRole);
+        log.info("USER_SERVICE  -> registerUser success");
         return convertToUserDetailDTO(saveUser);
     }
 

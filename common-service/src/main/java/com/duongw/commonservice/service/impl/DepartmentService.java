@@ -7,12 +7,14 @@ import com.duongw.commonservice.model.dto.response.department.DepartmentResponse
 import com.duongw.commonservice.model.entity.Department;
 import com.duongw.commonservice.repository.DepartmentRepository;
 import com.duongw.commonservice.service.IDepartmentService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class DepartmentService implements IDepartmentService {
 
 
@@ -35,6 +37,7 @@ public class DepartmentService implements IDepartmentService {
 
     @Override
     public List<DepartmentResponseDTO> getAllDepartment() {
+        log.info("");
         List<Department> departmentList = departmentRepository.findAll();
         return departmentList.stream().map(this::convertToDepartmentResponseDTO).toList();
     }

@@ -1,6 +1,7 @@
 package com.duongw.commonservice.service.impl;
 
 import com.duongw.common.config.i18n.Translator;
+import com.duongw.common.exception.ResourceNotFoundException;
 import com.duongw.commonservice.model.dto.request.item.CreateItemRequest;
 import com.duongw.commonservice.model.dto.request.item.UpdateItemRequest;
 import com.duongw.commonservice.model.dto.response.item.ItemResponseDTO;
@@ -66,7 +67,7 @@ public class ItemService implements IItemService {
     @Override
     public ItemResponseDTO getItemById(Long id) {
         log.info("ITEM_SERVICE  -> getItemById");
-        Item item = itemRepository.findById(id).orElseThrow(() -> new RuntimeException(Translator.toLocate("item.not.found")));
+        Item item = itemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("item.not.found")));
         return convertToItemResponseDTO(item);
     }
 
@@ -100,7 +101,7 @@ public class ItemService implements IItemService {
     @Override
     public ItemResponseDTO updateItem(Long id, UpdateItemRequest item) {
         log.info("ITEM_SERVICE  -> updateItem");
-        Item updateItem = itemRepository.findById(id).orElseThrow(() -> new RuntimeException(Translator.toLocate("item.not.found")));
+        Item updateItem = itemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("item.not.found")));
         updateItem.setItemName(item.getItemName());
         updateItem.setItemCode(item.getItemCode());
         updateItem.setItemValue(item.getItemValue());
@@ -113,7 +114,7 @@ public class ItemService implements IItemService {
     @Override
     public ItemResponseDTO updateItemStatus(Long id, String status) {
         log.info("ITEM_SERVICE  -> updateItemStatus");
-        Item updateItem = itemRepository.findById(id).orElseThrow(() -> new RuntimeException(Translator.toLocate("item.not.found")));
+        Item updateItem = itemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("item.not.found")));
         //TODO: set status
         updateItem.setStatus(1L);
         return convertToItemResponseDTO(itemRepository.save(updateItem));
@@ -122,7 +123,7 @@ public class ItemService implements IItemService {
     @Override
     public void deleteItem(Long id) {
         log.info("ITEM_SERVICE  -> deleteItem");
-        Item item = itemRepository.findById(id).orElseThrow(() -> new RuntimeException(Translator.toLocate("item.not.found")));
+        Item item = itemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("item.not.found")));
         itemRepository.delete(item);
 
 
@@ -132,7 +133,7 @@ public class ItemService implements IItemService {
     public RoleResponse convertToRoleResponseDTO(Long id) {
         log.info("ITEM_SERVICE  -> convertToRoleResponseDTO");
         log.info("Convert to RoleResponseDTO {}", id);
-        Item item = itemRepository.findById(id).orElseThrow(() -> new RuntimeException(Translator.toLocate("item.not.found")));
+        Item item = itemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("item.not.found")));
 
         log.info("GET: item.getItemCode(): {}", item.getItemCode());
         if (item.getItemCode().contains("ROLES_")) {
@@ -142,7 +143,7 @@ public class ItemService implements IItemService {
                     .roleId(item.getItemId())
                     .build();
         } else {
-            throw new RuntimeException(Translator.toLocate("item.not.role"));
+            throw new ResourceNotFoundException(Translator.toLocate("item.not.role"));
         }
 
     }
@@ -152,7 +153,7 @@ public class ItemService implements IItemService {
         log.info("ITEM_SERVICE  -> getAllRoles");
         List<Item> itemList = itemRepository.findByItemCodeContaining("ROLES_");
         if (itemList == null) {
-            throw new RuntimeException(Translator.toLocate("item.not.found"));
+            throw new ResourceNotFoundException(Translator.toLocate("item.not.found"));
         }
         return itemList.stream().map(role -> convertToRoleResponseDTO(role.getItemId())).toList();
     }
@@ -164,7 +165,7 @@ public class ItemService implements IItemService {
 
         log.info("GET: roleIdList: {} ", roleIdList);
         if (roleIdList == null) {
-            throw new RuntimeException(Translator.toLocate("item.not.found"));
+            throw new ResourceNotFoundException(Translator.toLocate("item.not.found"));
         }
         return roleIdList.stream().map(this::convertToRoleResponseDTO).toList();
 

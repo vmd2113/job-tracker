@@ -9,6 +9,7 @@ import com.duongw.commonservice.model.dto.response.user.UserResponseDTO;
 import java.util.List;
 
 public interface IUserService {
+
     List<UserResponseDTO> getAllUser();
 
     UserResponseDTO getUserById(Long id);

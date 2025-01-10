@@ -8,6 +8,7 @@ import com.duongw.commonservice.model.dto.request.item.UpdateItemRequest;
 import com.duongw.commonservice.model.dto.response.item.ItemResponseDTO;
 import com.duongw.commonservice.service.IItemService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequestMapping(path = ApiPath.API_ITEM)
 public class ItemController {
 
-    private final  IItemService itemService;
+    private final IItemService itemService;
 
     @Autowired
     public ItemController(IItemService itemService) {
@@ -29,6 +31,7 @@ public class ItemController {
     @GetMapping(path = "/")
     @Operation(summary = "get all data of items", description = "Send a request via this API to get all data of items")
     public ResponseEntity<ApiResponse<?>> getAllItem() {
+        log.info("ITEM_CONTROLLER -> getAllItem");
         List<ItemResponseDTO> itemList = itemService.getAllItem();
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("item.get-all.success"), itemList);
         return ResponseEntity.ok(apiResponse);
@@ -37,6 +40,8 @@ public class ItemController {
     @GetMapping(path = "/{id}")
     @Operation(summary = "get data of item by id", description = "Send a request via this API to get data of item by id")
     public ResponseEntity<ApiResponse<?>> getItemById(@PathVariable(name = "id") Long id) {
+
+        log.info("ITEM_CONTROLLER -> getItemById");
         ItemResponseDTO item = itemService.getItemById(id);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("item.get-by-id.success"), item);
         return ResponseEntity.ok(apiResponse);
@@ -45,6 +50,8 @@ public class ItemController {
     @GetMapping(path = "/name/{name}")
     @Operation(summary = "get data of item by name", description = "Send a request via this API to get data of item by name")
     public ResponseEntity<ApiResponse<?>> getItemByName(@PathVariable(name = "name") String name) {
+
+        log.info("ITEM_CONTROLLER -> getItemByName");
         ItemResponseDTO item = itemService.getItemByName(name);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("item.get-by-name.success"), item);
         return ResponseEntity.ok(apiResponse);
@@ -53,6 +60,8 @@ public class ItemController {
     @GetMapping(path = "/category/{categoryId}")
     @Operation(summary = "get data of item by category id", description = "Send a request via this API to get data of item by category id")
     public ResponseEntity<ApiResponse<?>> getItemByCategoryId(@PathVariable(name = "categoryId") Long categoryId) {
+
+        log.info("ITEM_CONTROLLER -> getItemByCategoryId");
         List<ItemResponseDTO> itemList = itemService.getItemByCategoryId(categoryId);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("item.get-by-category-id.success"), itemList);
         return ResponseEntity.ok(apiResponse);
@@ -61,6 +70,8 @@ public class ItemController {
     @GetMapping(path = "/parent/{parentItemId}")
     @Operation(summary = "get data of item by parent item id", description = "Send a request via this API to get data of item by parent item id")
     public ResponseEntity<ApiResponse<?>> getItemByParentItemId(@PathVariable(name = "parentItemId") Long parentItemId) {
+
+        log.info("ITEM_CONTROLLER -> getItemByParentItemId");
         List<ItemResponseDTO> itemList = itemService.getItemByParentItemId(parentItemId);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("item.get-by-parent-item-id.success"), itemList);
         return ResponseEntity.ok(apiResponse);
@@ -69,6 +80,7 @@ public class ItemController {
     @PostMapping(path = "/")
     @Operation(summary = "create and add a item ", description = "Send a request via this API to create a new item")
     public ResponseEntity<ApiResponse<?>> createItem(@RequestBody CreateItemRequest item) {
+        log.info("ITEM_CONTROLLER -> createItem");
         ItemResponseDTO item1 = itemService.createItem(item);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.CREATED, Translator.toLocate("item.create.success"), item1);
         return ResponseEntity.ok(apiResponse);
@@ -77,6 +89,7 @@ public class ItemController {
     @PutMapping(path = "/{id}")
     @Operation(summary = "update item by id", description = "Send a request via this API to update item by id")
     public ResponseEntity<ApiResponse<?>> updateItem(@PathVariable(name = "id") Long id, @RequestBody UpdateItemRequest item) {
+        log.info("ITEM_CONTROLLER -> updateItem");
         ItemResponseDTO item1 = itemService.updateItem(id, item);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("item.update.success"), item1);
         return ResponseEntity.ok(apiResponse);
@@ -92,6 +105,7 @@ public class ItemController {
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<ApiResponse<?>> deleteItem(@PathVariable(name = "id") Long id) {
+        log.info("ITEM_CONTROLLER -> deleteItem");
         itemService.deleteItem(id);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("item.delete.success"));
         return ResponseEntity.ok(apiResponse);

@@ -30,7 +30,9 @@ public class MinIOService implements IMinIOService {
     @Override
     public String uploadToMinIO(MultipartFile file, String businessCode) {
         try {
+            log.info("Uploading file to MinIO: {}", file.getOriginalFilename());
             String filePath = buildFilePath(businessCode, file);
+
 
             minioClient.putObject(PutObjectArgs.builder()
                     .bucket(BUCKET_NAME)
@@ -38,7 +40,7 @@ public class MinIOService implements IMinIOService {
                     .stream(file.getInputStream(), file.getSize(), -1)
                     .contentType(file.getContentType())
                     .build());
-
+            log.info("File uploaded to MinIO successfully: {}", filePath);
             return filePath;
         } catch (Exception e) {
             log.error("Error uploading file to MinIO: {}", e.getMessage(), e);
@@ -47,6 +49,7 @@ public class MinIOService implements IMinIOService {
     }
 
     private String buildFilePath(String businessCode, MultipartFile file) {
+        log.info("MinIOService  -> buildFilePath");
         LocalDateTime now = LocalDateTime.now();
         String datePath = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String timePath = now.format(DateTimeFormatter.ofPattern("HH-mmss"));
@@ -62,6 +65,7 @@ public class MinIOService implements IMinIOService {
     @Override
     public byte[] downloadFromMinIO(String filePath) {
         try {
+            log.info("Downloading file from MinIO: {}", filePath.toString());
             GetObjectResponse response = minioClient.getObject(
                     GetObjectArgs.builder()
                             .bucket(BUCKET_NAME)
@@ -78,6 +82,7 @@ public class MinIOService implements IMinIOService {
     @Override
     public void deleteFromMinIO(String filePath) {
         try {
+            log.info("Deleting file from MinIO: {}", filePath);
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
                             .bucket(BUCKET_NAME)
@@ -97,6 +102,7 @@ public class MinIOService implements IMinIOService {
     @Override
     public boolean isFileExist(String filePath) {
         try {
+            log.info("Checking if file exists in MinIO: {}", filePath);
             minioClient.statObject(
                     StatObjectArgs.builder()
                             .bucket(BUCKET_NAME)

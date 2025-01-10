@@ -20,7 +20,9 @@ public interface IFileService {
 
     byte[] downloadFile(String path);
 
-    byte[] downloadFile(Long fileId);
-
     void deleteFilesByBusinessCode(String businessCode);
+
+    byte[] downloadFileById(Long fileId);
+
+    void deleteFileById(Long fileId);
 }
