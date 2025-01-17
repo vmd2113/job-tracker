@@ -11,6 +11,7 @@ import org.springframework.context.annotation.ComponentScans;
         basePackages = {
                 "com.duongw.common",
                 "com.duongw.commonservice",
+                "com.duongw.commonservice.controller",
         })
 
 

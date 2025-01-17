@@ -62,8 +62,7 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(BAD_REQUEST)
-    @ExceptionHandler({
-            InvalidDataException.class,
+    @ExceptionHandler({InvalidDataException.class,
             ConstraintViolationException.class,
             MissingServletRequestParameterException.class,
             MethodArgumentNotValidException.class,
@@ -91,7 +90,6 @@ public class GlobalExceptionHandler {
     })
     public ErrorResponse handleValidationExceptions(Exception ex, WebRequest request) {
         ErrorResponse response = createBaseErrorResponse(request, BAD_REQUEST);
-
         if (ex instanceof MethodArgumentNotValidException methodEx) {
             response.setError("Invalid Payload");
             response.setMessage(extractMethodArgumentErrorMessage(methodEx));

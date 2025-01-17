@@ -109,7 +109,7 @@ public class UserController {
 
     @PostMapping(path = "/")
     @Operation(summary = "create user", description = "Send a request via this API to create a new user")
-    public ResponseEntity<ApiResponse<?>> createUser(@Valid @RequestBody CreateUserRequest user) {
+    public ResponseEntity<ApiResponse<?>> createUser( @RequestBody CreateUserRequest user) {
         log.info("USER_CONTROLLER  -> createUser");
         UserResponseDTO user1 = userService.createUser(user);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.CREATED, Translator.toLocate("user.create.success"), user1);

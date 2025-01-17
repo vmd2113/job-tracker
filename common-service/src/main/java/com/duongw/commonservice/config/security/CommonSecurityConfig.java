@@ -1,7 +1,7 @@
 package com.duongw.commonservice.config.security;
 
 import com.duongw.common.constant.SystemConstant;
-import jakarta.servlet.Filter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,13 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.util.Arrays;
 
 @Configuration
+@Slf4j
 public class CommonSecurityConfig {
 
     private final JwtAuthFilter jwtAuthenticationFilter;
@@ -33,39 +29,15 @@ public class CommonSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // Đúng pattern
-                        .allowedOrigins("http://localhost:8080", "http://localhost:3000")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
-                        .allowedHeaders("*")
-                        .exposedHeaders("X-User-Id", "X-Username", "X-Roles") // Thêm phần này
-                        .allowCredentials(true) // Đổi thành true
-                        .maxAge(3600);
-            }
-        };
-    }
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        log.info("COMMON_SECURITY_CONFIG  -> securityFilterChain");
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .cors(cors -> cors.configurationSource(request -> {
-                    var corsConfiguration = new CorsConfiguration();
-                    corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://localhost:3000"));
-                    corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-                    corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
-                    corsConfiguration.setExposedHeaders(Arrays.asList("X-User-Id", "X-Username", "X-Roles"));
-                    corsConfiguration.setAllowCredentials(true);
-                    corsConfiguration.setMaxAge(3600L);
-                    return corsConfiguration;
-                }))
+
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/api/v1/internal/**").permitAll();
                     auth.requestMatchers(SystemConstant.WHITE_LIST).permitAll();

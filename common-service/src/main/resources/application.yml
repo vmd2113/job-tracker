@@ -40,3 +40,8 @@ minio:
   secret-key: minioadmin
   bucket-name: job-tracker
 
+logging:
+  level:
+    org.springframework.web: DEBUG    # Thêm logging để debug
+    org.springframework.security: DEBUG
+

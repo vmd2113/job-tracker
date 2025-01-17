@@ -26,18 +26,17 @@ spring:
   cloud:
     gateway:
       default-filters:
-        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
       globalcors:
-        add-to-simple-url-handler-mapping: true  # Thêm dòng này
         corsConfigurations:
           '[/**]':
             allowedOrigins:
-              - "http://localhost:8080"
-              - "http://localhost:3000"
+              - "http://localhost:5001"
             allowedMethods:
               - GET
               - POST
               - PUT
+              - PATCH
               - DELETE
               - OPTIONS
             allowedHeaders: "*"
@@ -45,6 +44,7 @@ spring:
               - X-User-Id
               - X-Username
               - X-Roles
+              - Authorization
             allowCredentials: true
             maxAge: 3600
       discovery:

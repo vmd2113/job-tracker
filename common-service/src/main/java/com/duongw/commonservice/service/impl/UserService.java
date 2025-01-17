@@ -142,9 +142,9 @@ public class UserService implements IUserService {
         newUser.setLastName(user.getLastName());
         newUser.setDepartmentId(user.getDepartmentId());
 
-        //TODO: set status
-//        newUser.setStatus(user.getStatus());
 
+
+        //TODO: set status
 
         newUser.setStatus(1L);
         log.info("USER_SERVICE  -> createUser");
@@ -163,10 +163,14 @@ public class UserService implements IUserService {
     public UserResponseDTO updateUser(Long id, UpdateUserRequest user) {
         log.info("USER_SERVICE  -> updateUser");
         Users updateUser = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("user.not-found")));
+        updateUser.setUsername(user.getUsername());
+        updateUser.setEmail(user.getEmail());
+        updateUser.setPhoneNumber(user.getPhoneNumber());
         updateUser.setFirstName(user.getFirstName());
         updateUser.setLastName(user.getLastName());
         updateUser.setDepartmentId(user.getDepartmentId());
         userRepository.save(updateUser);
+
 
         updateUser.setCreatedByUser(1L);
         updateUser.setUpdatedByUser(1L);
