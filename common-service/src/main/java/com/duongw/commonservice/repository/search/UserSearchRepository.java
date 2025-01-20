@@ -65,9 +65,12 @@ public class UserSearchRepository extends AbstractEntityCriteriaQuery<Users> {
         }
         // Create TypedQuery for pagination
         TypedQuery<Users> typedQuery = entityManager.createQuery(query);
+
+        int zeroBasedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+
         // Apply pagination
-        if (pageNo != 0 && pageSize != 0) {
-            typedQuery.setFirstResult(pageNo * pageSize);
+        if (pageSize > 0) {
+            typedQuery.setFirstResult(zeroBasedPageNo * pageSize);
             typedQuery.setMaxResults(pageSize);
         }
         // Execute query

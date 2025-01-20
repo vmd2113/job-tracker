@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -130,7 +131,24 @@ public class FileService implements IFileService {
 
     @Override
     public byte[] downloadFile(String path) {
-        return new byte[0];
+        List<byte[]> files = new ArrayList<>();
+        log.info("Downloading file by path: {}", path);
+        try {
+            List<Files> fileInfo = fileRepository.findByFilePath(path);
+            for (Files file_ : fileInfo) {
+                files.add(minIOService.downloadFromMinIO(file_.getFilePath()));
+
+            }
+            return files.stream().reduce((byte[]) null, (a, b) -> {
+                byte[] result = new byte[a.length + b.length];
+                System.arraycopy(a, 0, result, 0, a.length);
+                System.arraycopy(b, 0, result, a.length, b.length);
+                return result;
+            });
+        } catch (Exception e) {
+            log.error("Error downloading file by path {}: {}", path, e.getMessage(), e);
+            throw new FileStorageException("Failed to download file by path", e);
+        }
     }
 
     @Override

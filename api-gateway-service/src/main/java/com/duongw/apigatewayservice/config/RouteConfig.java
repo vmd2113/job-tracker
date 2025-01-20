@@ -17,6 +17,8 @@ public class RouteConfig {
                 // Route cho config-view API
                 .route("config-view", r -> r.path("/api/v1/config-view/**")
                         .uri("lb://COMMON-SERVICE"))
+                .route("items", r-> r.path("/api/v1/items/**")
+                        .uri("lb://COMMON-SERVICE"))
 
                 // Route cho departments API
                 .route("departments", r -> r.path("/api/v1/departments/**")

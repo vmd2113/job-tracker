@@ -13,6 +13,7 @@ public interface FileRepository extends JpaRepository<Files, Long> {
 
     Files findByBusinessId(Long businessId);
     List<Files> findByBusinessCode(String businessCode);
+    List<Files> findByFilePath(String filePath);
 
 
     void deleteByBusinessId(Long businessId);

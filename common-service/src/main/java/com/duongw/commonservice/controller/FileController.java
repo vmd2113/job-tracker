@@ -5,10 +5,7 @@ import com.duongw.common.model.dto.response.ApiResponse;
 import com.duongw.commonservice.service.IFileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -34,6 +31,22 @@ public class FileController {
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, "Upload and store file successfully", null);
         return ResponseEntity.ok(apiResponse);
 
+    }
+
+    @GetMapping(path = "/{fileId}")
+    public ResponseEntity<ApiResponse<?>> downloadFileById(@PathVariable(name = "fileId") Long fileId) {
+        byte[] file = fileService.downloadFileById(fileId);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, "Download file successfully", file);
+        return ResponseEntity.ok(apiResponse);
+    }
+
+
+
+    @DeleteMapping(path = "/{fileId}")
+    public ResponseEntity<ApiResponse<?>> deleteFileById(@PathVariable(name = "fileId") Long fileId) {
+        fileService.deleteFileById(fileId);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, "Delete file successfully", null);
+        return ResponseEntity.ok(apiResponse);
     }
 
 

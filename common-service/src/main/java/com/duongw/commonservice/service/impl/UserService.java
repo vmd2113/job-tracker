@@ -143,7 +143,6 @@ public class UserService implements IUserService {
         newUser.setDepartmentId(user.getDepartmentId());
 
 
-
         //TODO: set status
 
         newUser.setStatus(1L);
@@ -268,6 +267,12 @@ public class UserService implements IUserService {
     @Override
     public PageResponse<?> searchUserByCriteria(int pageNo, int pageSize, String usernameSearch, String emailSearch, String phoneNumberSearch, String firstNameSearch, String sortBy, String sortDirection) {
         log.info("USER_SERVICE  -> searchUserByCriteria");
+        if (pageNo < 1) {
+            pageNo = 1;  // Đảm bảo page luôn bắt đầu từ 1
+        }
+        if (pageSize <= 0) {
+            pageSize = 10;  // Default page size
+        }
         return userSearchRepository.searchUserByCriteria(pageNo, pageSize, usernameSearch, emailSearch, phoneNumberSearch, firstNameSearch, sortBy, sortDirection);
     }
 }

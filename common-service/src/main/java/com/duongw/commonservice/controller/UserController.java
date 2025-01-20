@@ -88,16 +88,16 @@ public class UserController {
     @GetMapping(path = "/search")
     @Operation(summary = "search user by criteria", description = "Send a request via this API to search user by criteria")
 
-    public ResponseEntity<ApiResponse<?>> searchUserByCriteria(@RequestParam(name = "page", defaultValue = "0") int page,
-                                                               @RequestParam(name = "size", defaultValue = "2") int size,
+    public ResponseEntity<ApiResponse<?>> searchUserByCriteria(@RequestParam(name = "page") int page,
+                                                               @RequestParam(name = "size") int size,
 
                                                                @RequestParam(name = "username", required = false) String usernameSearch,
                                                                @RequestParam(name = "email", required = false) String emailSearch,
                                                                @RequestParam(name = "phoneNumber", required = false) String phoneNumberSearch,
                                                                @RequestParam(name = "firstname", required = false) String firstNameSearch,
 
-                                                               @RequestParam(name = "sortBy", required = false) String sortBy,
-                                                               @RequestParam(name = "sortDirection", required = false) String sortDirection) {
+                                                               @RequestParam(name = "sortBy", required = false, defaultValue = "updateDate") String sortBy,
+                                                               @RequestParam(name = "sortDirection", required = false, defaultValue = "asc") String sortDirection) {
 
         log.info("USER_CONTROLLER  -> searchUserByCriteria");
         PageResponse<?> pageResponse = userService.searchUserByCriteria(page, size, usernameSearch, emailSearch, phoneNumberSearch, firstNameSearch, sortBy, sortDirection);
