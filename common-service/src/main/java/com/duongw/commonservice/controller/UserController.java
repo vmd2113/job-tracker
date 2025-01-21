@@ -88,8 +88,8 @@ public class UserController {
     @GetMapping(path = "/search")
     @Operation(summary = "search user by criteria", description = "Send a request via this API to search user by criteria")
 
-    public ResponseEntity<ApiResponse<?>> searchUserByCriteria(@RequestParam(name = "page") int page,
-                                                               @RequestParam(name = "size") int size,
+    public ResponseEntity<ApiResponse<?>> searchUserByCriteria(@RequestParam(name = "page", defaultValue = "1") int page,
+                                                               @RequestParam(name = "size", defaultValue = "10") int size,
 
                                                                @RequestParam(name = "username", required = false) String usernameSearch,
                                                                @RequestParam(name = "email", required = false) String emailSearch,
