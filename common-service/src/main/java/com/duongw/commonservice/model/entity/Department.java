@@ -35,5 +35,9 @@ public class Department extends BaseEntity {
     @Column(name = "STATUS")
     private Long status;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PARENT_DEPARTMENT_ID")
+    private Department parentDepartment;
+
 
 }
