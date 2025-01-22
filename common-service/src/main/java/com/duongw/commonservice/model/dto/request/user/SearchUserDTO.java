@@ -10,7 +10,6 @@ public class SearchUserDTO {
     private String email;
     private String phoneNumber;
     private String firstName;
-
     private String sortBy;
     private String sortDirection;
 

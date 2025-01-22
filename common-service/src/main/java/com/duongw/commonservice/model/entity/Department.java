@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 
 @Entity
 @Table(name = "DEPARTMENT")
@@ -29,15 +31,20 @@ public class Department extends BaseEntity {
     @Column(name = "DEPARTMENT_CODE")
     private String departmentCode;
 
-    @Column(name = "PARENT_DEPARTMENT_ID")
-    private Long departmentParentId;
-
     @Column(name = "STATUS")
     private Long status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_DEPARTMENT_ID")
     private Department parentDepartment;
+
+    @OneToMany(mappedBy = "parentDepartment")
+    private List<Department> subDepartment;
+
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
+    private List<Users> users;
+
+
 
 
 }

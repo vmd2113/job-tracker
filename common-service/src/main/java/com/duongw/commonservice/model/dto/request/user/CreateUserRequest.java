@@ -19,17 +19,21 @@ public class CreateUserRequest {
     private String username;
 
     @Email(message = "{validate.email.fail}")
-
     private String email;
 
+    @NotBlank(message = "{validate.password.fail}")
     private String password;
 
+    @PhoneNumber
     private String phoneNumber;
 
+    @NotBlank(message = "{validate.firstname.fail}")
     private String firstName;
 
+    @NotBlank(message = "{validate.lastname.fail}")
     private String lastName;
 
+    @Size(min = 2, max = 100, message = "{validate.department.fail}")
     private Long departmentId;
 
     private String status = "Active";

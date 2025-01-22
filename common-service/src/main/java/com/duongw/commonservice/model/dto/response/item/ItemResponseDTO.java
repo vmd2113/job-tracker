@@ -24,5 +24,7 @@ public class ItemResponseDTO {
 
     private Long categoryId;
 
+    private String categoryCode;
+
     private Long status;
 }

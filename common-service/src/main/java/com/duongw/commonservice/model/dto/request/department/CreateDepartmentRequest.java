@@ -1,6 +1,7 @@
 package com.duongw.commonservice.model.dto.request.department;
 
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,12 +12,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateDepartmentRequest {
-
-    private String departmentName;
+    @NotBlank(message = "Department code cannot be empty")
 
     private String departmentCode;
 
-    private Long departmentParentId;
+    private String departmentName;
+
+    private String departmentParentCode;
 
     private Long status;
 }

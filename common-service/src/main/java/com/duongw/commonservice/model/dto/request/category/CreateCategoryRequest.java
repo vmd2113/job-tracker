@@ -14,5 +14,5 @@ public class CreateCategoryRequest {
 
     private String categoryName;
 
-    private Long status;
+    private Long status = 1L;
 }

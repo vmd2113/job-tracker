@@ -8,8 +8,10 @@ import com.duongw.commonservice.model.dto.request.user.CreateUserRequest;
 import com.duongw.commonservice.model.dto.request.user.UpdateUserRequest;
 import com.duongw.commonservice.model.dto.response.user.UserDetailDTO;
 import com.duongw.commonservice.model.dto.response.user.UserResponseDTO;
+import com.duongw.commonservice.model.entity.Department;
 import com.duongw.commonservice.model.entity.UserRole;
 import com.duongw.commonservice.model.entity.Users;
+import com.duongw.commonservice.repository.DepartmentRepository;
 import com.duongw.commonservice.repository.UserRepository;
 import com.duongw.commonservice.repository.search.UserSearchRepository;
 import com.duongw.commonservice.service.IItemService;
@@ -33,15 +35,17 @@ public class UserService implements IUserService {
     private final IItemService itemService;
     private final UserSearchRepository userSearchRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DepartmentRepository departmentRepository;
 
 
     @Autowired
-    public UserService(UserRepository userRepository, IUserRoleService userRoleService, IItemService itemService, UserSearchRepository userSearchRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, IUserRoleService userRoleService, IItemService itemService, UserSearchRepository userSearchRepository, PasswordEncoder passwordEncoder, DepartmentRepository departmentRepository) {
         this.userRepository = userRepository;
         this.userRoleService = userRoleService;
         this.itemService = itemService;
         this.userSearchRepository = userSearchRepository;
         this.passwordEncoder = passwordEncoder;
+        this.departmentRepository = departmentRepository;
     }
 
     private UserResponseDTO convertToUserResponseDTO(Users user) {
@@ -56,7 +60,8 @@ public class UserService implements IUserService {
         userResponseDTO.setPhoneNumber(user.getPhoneNumber());
         userResponseDTO.setFirstName(user.getFirstName());
         userResponseDTO.setLastName(user.getLastName());
-        userResponseDTO.setDepartmentId(user.getDepartmentId());
+
+        userResponseDTO.setDepartmentId(user.getDepartment().getDepartmentId());
         userResponseDTO.setStatus(user.getStatus());
         log.info("USER_SERVICE  -> convertToUserResponseDTO");
         log.info("UserResponseDTO: {}", userResponseDTO);
@@ -140,9 +145,10 @@ public class UserService implements IUserService {
         newUser.setPhoneNumber(user.getPhoneNumber());
         newUser.setFirstName(user.getFirstName());
         newUser.setLastName(user.getLastName());
-        newUser.setDepartmentId(user.getDepartmentId());
-
-
+        if (user.getDepartmentId() != null) {
+            Department department = departmentRepository.findById(user.getDepartmentId()).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("department.not-found")));
+            newUser.setDepartment(department);
+        }
         //TODO: set status
 
         newUser.setStatus(1L);
@@ -167,7 +173,11 @@ public class UserService implements IUserService {
         updateUser.setPhoneNumber(user.getPhoneNumber());
         updateUser.setFirstName(user.getFirstName());
         updateUser.setLastName(user.getLastName());
-        updateUser.setDepartmentId(user.getDepartmentId());
+
+        if (user.getDepartmentId() != null) {
+            Department department = departmentRepository.findById(user.getDepartmentId()).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("department.not-found")));
+            updateUser.setDepartment(department);
+        }
         userRepository.save(updateUser);
 
 
@@ -226,7 +236,8 @@ public class UserService implements IUserService {
         userDetailDTO.setPhoneNumber(user.getPhoneNumber());
         userDetailDTO.setFirstName(user.getFirstName());
         userDetailDTO.setLastName(user.getLastName());
-        userDetailDTO.setDepartmentId(user.getDepartmentId());
+        userDetailDTO.setDepartmentId(user.getDepartment().getDepartmentId());
+
         userDetailDTO.setStatus(user.getStatus());
         userDetailDTO.setRoles(itemService.getRoleByUserId(user.getUserId()));
         return userDetailDTO;
@@ -243,7 +254,10 @@ public class UserService implements IUserService {
         newUser.setPhoneNumber(user.getPhoneNumber());
         newUser.setFirstName(user.getFirstName());
         newUser.setLastName(user.getLastName());
-        newUser.setDepartmentId(user.getDepartmentId());
+        if (user.getDepartmentId() != null) {
+            Department department = departmentRepository.findById(user.getDepartmentId()).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("department.not-found")));
+            newUser.setDepartment(department);
+        }
         //TODO: set status
         newUser.setStatus(1L);
         Users saveUser = userRepository.save(newUser);

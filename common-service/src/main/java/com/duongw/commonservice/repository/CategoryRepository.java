@@ -9,11 +9,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    Category findByCategoryCode(String code);
+    Optional<Category> findByCategoryCode(String code);
     Category findByCategoryName(String name);
+    Optional<Category> findByCategoryId(Long id);
     List<Category> findByStatus(Long status);
 
     boolean existsByCategoryCode(String code);

@@ -18,8 +18,10 @@ public class PageResponse<T> implements Serializable {
 
     private Long total;
     private List<T> items;
-    private int pageNo;
+    private int pageNo ;
     private int pageSize;
+
+
 
 
 

@@ -3,6 +3,7 @@ package com.duongw.commonservice.controller;
 import com.duongw.common.config.i18n.Translator;
 import com.duongw.common.constant.ApiPath;
 import com.duongw.common.model.dto.response.ApiResponse;
+import com.duongw.common.model.dto.response.PageResponse;
 import com.duongw.commonservice.model.dto.request.item.CreateItemRequest;
 import com.duongw.commonservice.model.dto.request.item.UpdateItemRequest;
 import com.duongw.commonservice.model.dto.response.item.ItemResponseDTO;
@@ -74,6 +75,21 @@ public class ItemController {
         log.info("ITEM_CONTROLLER -> getItemByParentItemId");
         List<ItemResponseDTO> itemList = itemService.getItemByParentItemId(parentItemId);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("item.get-by-parent-item-id.success"), itemList);
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping(path = "/search")
+    @Operation(summary = "search item by specification", description = "Send a request via this API to search item by criteria")
+    public ResponseEntity<ApiResponse<?>> searchItem(@RequestParam(name = "page", defaultValue = "1") int page,
+                                                     @RequestParam(name = "size", defaultValue = "10") int size,
+                                                     @RequestParam(name = "itemName", required = false) String itemName,
+                                                     @RequestParam(name = "itemCode", required = false) String itemCode,
+                                                     @RequestParam(name = "categoryCode", required = false) String categoryCode,
+                                                     @RequestParam(name = "sortBy", required = false, defaultValue = "updateDate") String sortBy,
+                                                     @RequestParam(name = "sortDirection", required = false, defaultValue = "asc") String sortDirection) {
+        log.info("ITEM_CONTROLLER -> searchItemByCriteria");
+        PageResponse<ItemResponseDTO> pageResponse = itemService.searchItems(itemName, itemCode, categoryCode, page, size, sortBy, sortDirection);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("item.search.success"), pageResponse);
         return ResponseEntity.ok(apiResponse);
     }
 

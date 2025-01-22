@@ -41,9 +41,9 @@ public class Users extends BaseEntity {
     @Column(name = "LAST_NAME")
     private String lastName;
 
-
-    @Column(name = "DEPARTMENT_ID")
-    private Long departmentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DEPARTMENT_ID")
+    private Department department;
 
     @Column(name = "STATUS")
     private Long status;

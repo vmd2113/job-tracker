@@ -1,22 +1,27 @@
 package com.duongw.commonservice.repository;
 
-import com.duongw.commonservice.model.entity.ConfigView;
+
+import com.duongw.commonservice.model.entity.Category;
 import com.duongw.commonservice.model.entity.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface ItemRepository extends JpaRepository<Item, Long> {
+@Repository
+public interface ItemRepository extends JpaRepository<Item, Long>, JpaSpecificationExecutor<Item> {
     Item findByItemCode(String name);
+
     Item findByItemName(String name);
+
     List<Item> findByStatus(Long status);
-    List<Item> findByCategoryId(Long categoryId);
+
+    List<Item> findItemByCategory(Category category);
+
     List<Item> findByParentItemId(Long parentItemId);
+
     List<Item> findByItemCodeContaining(String itemCode);
-
-
-
-
 
 
 }

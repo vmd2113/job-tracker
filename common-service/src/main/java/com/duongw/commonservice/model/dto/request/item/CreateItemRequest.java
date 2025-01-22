@@ -20,7 +20,7 @@ public class CreateItemRequest {
 
     private Long parentItemId;
 
-    private Long categoryId;
+    private String categoryCode;
 
-    private Long status;
+    private Long status = 1L;
 }

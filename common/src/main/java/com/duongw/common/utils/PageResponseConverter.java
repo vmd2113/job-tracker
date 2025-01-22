@@ -12,7 +12,7 @@ public class PageResponseConverter {
         return PageResponse.<T>builder()
                 .total(page.getTotalElements())  // Tổng số phần tử
                 .items(page.getContent())        // Danh sách phần tử trong trang
-                .pageNo(page.getNumber())        // Số trang hiện tại (0-indexed)
+                .pageNo(page.getNumber()+1)        // Số trang hiện tại (0-indexed)
                 .pageSize(page.getSize())        // Kích thước trang
                 .build();
     }
@@ -22,7 +22,7 @@ public class PageResponseConverter {
         return PageResponse.<T>builder()
                 .total(total)
                 .items(list)
-                .pageNo(0)          // Default, có thể tính lại tùy theo yêu cầu
+                .pageNo(1)          // Default, có thể tính lại tùy theo yêu cầu
                 .pageSize(list.size())
                 .build();
     }

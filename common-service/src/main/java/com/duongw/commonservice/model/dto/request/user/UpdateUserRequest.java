@@ -26,6 +26,7 @@ public class UpdateUserRequest {
 
     private Long departmentId;
 
+    private Long status;
 
 
 }

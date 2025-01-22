@@ -10,11 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateDepartmentRequest {
+
     private String departmentName;
 
     private String departmentCode;
 
-    private Long departmentParentId;
+    private String departmentParentCode;
 
     private Long status;
 }

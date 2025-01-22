@@ -3,9 +3,11 @@ package com.duongw.commonservice.controller;
 import com.duongw.common.config.i18n.Translator;
 import com.duongw.common.constant.ApiPath;
 import com.duongw.common.model.dto.response.ApiResponse;
+import com.duongw.common.model.dto.response.PageResponse;
 import com.duongw.commonservice.model.dto.request.department.CreateDepartmentRequest;
 import com.duongw.commonservice.model.dto.request.department.UpdateDepartmentRequest;
 import com.duongw.commonservice.model.dto.response.department.DepartmentResponseDTO;
+import com.duongw.commonservice.model.dto.response.department.DepartmentTreeResponseDTO;
 import com.duongw.commonservice.service.IDepartmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -66,11 +68,26 @@ public class DepartmentController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping(path = "/parent/{parentId}")
-    @Operation(summary = "get data of department by parent id", description = "Send a request via this API to get data of department by parent id")
-    public ResponseEntity<ApiResponse<?>> getDepartmentByParentId(@PathVariable(name = "parentId") Long parentId) {
-        List<DepartmentResponseDTO> departmentList = departmentService.getDepartmentByParentId(parentId);
-        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("department.get-by-parent-id.success"), departmentList);
+    @GetMapping(path = "/search")
+    @Operation(summary = "search department by criteria", description = "Send a request via this API to search department by criteria")
+    public ResponseEntity<ApiResponse<?>> searchDepartmentByCriteria(@RequestParam(name = "page", defaultValue = "1") int page,
+                                                                     @RequestParam(name = "size", defaultValue = "10") int size,
+                                                                     @RequestParam(name = "departmentName", required = false) String departmentName,
+                                                                     @RequestParam(name = "departmentCode", required = false) String departmentCode,
+                                                                     @RequestParam(name = "sortBy", required = false, defaultValue = "updateDate") String sortBy,
+                                                                     @RequestParam(name = "sortDirection", required = false, defaultValue = "asc") String sortDirection) {
+        log.info("DEPARTMENT_CONTROLLER -> searchDepartmentByCriteria");
+        PageResponse<DepartmentResponseDTO> pageResponse = departmentService.searchDepartments(departmentName, departmentCode, page, size, sortBy, sortDirection);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("department.search.success"), pageResponse);
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping(path = "/hierarchy")
+    @Operation(summary = "get department hierarchy", description = "Send a request via this API to get department hierarchy")
+    public ResponseEntity<ApiResponse<?>> getDepartmentHierarchy() {
+        log.info("DEPARTMENT_CONTROLLER -> getDepartmentHierarchy");
+        List<DepartmentTreeResponseDTO> departmentTreeResponseDTOList = departmentService.getDepartmentHierarchy();
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("department.get-hierarchy.success"), departmentTreeResponseDTOList);
         return ResponseEntity.ok(apiResponse);
     }
 

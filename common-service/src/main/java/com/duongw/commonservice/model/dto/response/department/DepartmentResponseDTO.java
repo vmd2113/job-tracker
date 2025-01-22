@@ -21,4 +21,6 @@ public class DepartmentResponseDTO {
 
     private Long status;
 
+
+
 }

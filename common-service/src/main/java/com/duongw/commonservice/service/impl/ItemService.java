@@ -2,12 +2,17 @@ package com.duongw.commonservice.service.impl;
 
 import com.duongw.common.config.i18n.Translator;
 import com.duongw.common.exception.ResourceNotFoundException;
+import com.duongw.common.model.dto.response.PageResponse;
 import com.duongw.commonservice.model.dto.request.item.CreateItemRequest;
 import com.duongw.commonservice.model.dto.request.item.UpdateItemRequest;
 import com.duongw.commonservice.model.dto.response.item.ItemResponseDTO;
 import com.duongw.commonservice.model.dto.response.role.RoleResponse;
+import com.duongw.commonservice.model.entity.Category;
 import com.duongw.commonservice.model.entity.Item;
+import com.duongw.commonservice.repository.CategoryRepository;
 import com.duongw.commonservice.repository.ItemRepository;
+import com.duongw.commonservice.repository.search.ItemSearchRepository;
+import com.duongw.commonservice.service.ICategoryService;
 import com.duongw.commonservice.service.IItemService;
 import com.duongw.commonservice.service.IUserRoleService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +27,16 @@ public class ItemService implements IItemService {
 
     private final ItemRepository itemRepository;
     private final IUserRoleService userRoleService;
+    private final CategoryRepository categoryRepository;
+    private final ItemSearchRepository itemSearchRepository;
+
 
     @Autowired
-    public ItemService(ItemRepository itemRepository, IUserRoleService userRoleService) {
+    public ItemService(ItemRepository itemRepository, IUserRoleService userRoleService, CategoryRepository categoryRepository, ItemSearchRepository itemSearchRepository) {
         this.itemRepository = itemRepository;
         this.userRoleService = userRoleService;
-
+        this.categoryRepository = categoryRepository;
+        this.itemSearchRepository = itemSearchRepository;
     }
 
     private ItemResponseDTO convertToItemResponseDTO(Item item) {
@@ -38,7 +47,8 @@ public class ItemService implements IItemService {
         itemResponseDTO.setItemCode(item.getItemCode());
         itemResponseDTO.setItemValue(item.getItemValue());
         itemResponseDTO.setParentItemId(item.getParentItemId());
-        itemResponseDTO.setCategoryId(item.getCategoryId());
+        itemResponseDTO.setCategoryId(item.getCategory().getCategoryId());
+        itemResponseDTO.setCategoryCode(item.getCategory().getCategoryCode());
         itemResponseDTO.setStatus(item.getStatus());
         return itemResponseDTO;
     }
@@ -53,7 +63,8 @@ public class ItemService implements IItemService {
     @Override
     public List<ItemResponseDTO> getItemByCategoryId(Long categoryId) {
         log.info("ITEM_SERVICE  -> getItemByCategoryId");
-        List<Item> itemList = itemRepository.findByCategoryId(categoryId);
+        Category category = categoryRepository.findByCategoryId(categoryId).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("category.not.found")));
+        List<Item> itemList = itemRepository.findItemByCategory(category);
         return itemList.stream().map(this::convertToItemResponseDTO).toList();
     }
 
@@ -93,7 +104,11 @@ public class ItemService implements IItemService {
         newItem.setItemCode(item.getItemCode());
         newItem.setItemValue(item.getItemValue());
         newItem.setParentItemId(item.getParentItemId());
-        newItem.setCategoryId(item.getCategoryId());
+
+        Category category = categoryRepository.findByCategoryCode(item.getCategoryCode()).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("category.not.found")));
+        newItem.setCategory(category);
+
+
         newItem.setStatus(item.getStatus());
         return convertToItemResponseDTO(itemRepository.save(newItem));
     }
@@ -106,7 +121,8 @@ public class ItemService implements IItemService {
         updateItem.setItemCode(item.getItemCode());
         updateItem.setItemValue(item.getItemValue());
         updateItem.setParentItemId(item.getParentItemId());
-        updateItem.setCategoryId(item.getCategoryId());
+        Category category = categoryRepository.findByCategoryCode(item.getCategoryCode()).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("category.not.found")));
+        updateItem.setCategory(category);
         updateItem.setStatus(item.getStatus());
         return convertToItemResponseDTO(itemRepository.save(updateItem));
     }
@@ -169,6 +185,11 @@ public class ItemService implements IItemService {
         }
         return roleIdList.stream().map(this::convertToRoleResponseDTO).toList();
 
+    }
+
+    @Override
+    public PageResponse<ItemResponseDTO> searchItems(String itemName, String itemCode, String categoryCode, int pageNo, int pageSize, String sortBy, String sortDirection) {
+        return itemSearchRepository.searchItems(itemName, itemCode, categoryCode, pageNo, pageSize, sortBy, sortDirection);
     }
 
 }

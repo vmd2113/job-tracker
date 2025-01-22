@@ -38,14 +38,12 @@ public class Item extends BaseEntity {
     @Column(name = "PARENT_ITEM_ID")
     private Long parentItemId;
 
-    @Column(name = "CATEGORY_ID")
-    private Long categoryId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CATEGORY_ID")
+    private Category category;
 
     @Column(name = "STATUS")
     private Long status;
-
-
-
 
 
 }

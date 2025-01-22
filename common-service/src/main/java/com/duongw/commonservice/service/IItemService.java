@@ -1,5 +1,6 @@
 package com.duongw.commonservice.service;
 
+import com.duongw.common.model.dto.response.PageResponse;
 import com.duongw.commonservice.model.dto.request.item.CreateItemRequest;
 import com.duongw.commonservice.model.dto.request.item.UpdateItemRequest;
 import com.duongw.commonservice.model.dto.response.item.ItemResponseDTO;
@@ -31,7 +32,10 @@ public interface IItemService {
     RoleResponse convertToRoleResponseDTO(Long id);
 
     List<RoleResponse> getAllRoles();
+
     List<RoleResponse> getRoleByUserId(Long userId);
+
+    PageResponse<ItemResponseDTO> searchItems(String itemName, String itemCode, String categoryCode, int pageNo, int pageSize, String sortBy, String sortDirection);
 }
 
 
