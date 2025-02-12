@@ -1,5 +1,6 @@
 package com.duongw.common.config.i18n;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -19,10 +20,9 @@ public class Translator {
     }
 
 
-
-
     public static String toLocate(String s) {
         Locale locale = LocaleContextHolder.getLocale();
         return messageSource.getMessage(s, null, locale);
     }
+
 }

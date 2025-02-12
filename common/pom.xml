@@ -6,13 +6,16 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.4.1</version>
-        <relativePath/> <!-- lookup parent from repository -->
+
+        <relativePath/>
     </parent>
+
     <groupId>com.duongw</groupId>
     <artifactId>common</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>common</name>
     <description>common</description>
+    <packaging>jar</packaging>
     <url/>
     <licenses>
         <license/>

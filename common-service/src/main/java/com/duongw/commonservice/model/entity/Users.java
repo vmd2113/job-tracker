@@ -34,7 +34,6 @@ public class Users extends BaseEntity {
     @Column(name = "PHONE_NUMBER")
     private String phoneNumber;
 
-
     @Column(name = "FIRST_NAME")
     private String firstName;
 

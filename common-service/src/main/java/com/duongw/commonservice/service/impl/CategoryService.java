@@ -25,6 +25,7 @@ public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
 
+
     @Autowired
     public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;

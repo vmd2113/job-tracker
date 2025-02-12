@@ -14,30 +14,16 @@ public class RouteConfig {
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder, JwtAuthenticationFilter jwtFilter) {
         return builder.routes()
-                // Route cho config-view API
-                .route("config-view", r -> r.path("/api/v1/config-view/**")
+                // Route cho common service
+                .route("common-service", r -> r.path("/api/v1/cm/**")
+                        .filters(f -> f.stripPrefix(0))  // Không strip prefix
                         .uri("lb://COMMON-SERVICE"))
-                .route("items", r-> r.path("/api/v1/items/**")
-                        .uri("lb://COMMON-SERVICE"))
+                // Các route khác giữ nguyên
 
-                // Route cho departments API
-                .route("departments", r -> r.path("/api/v1/departments/**")
-                        .uri("lb://COMMON-SERVICE"))
 
-                // Route cho users API
-                .route("users", r -> r.path("/api/v1/users/**")
-                        .uri("lb://COMMON-SERVICE"))
-
-                // Route cho user-role API
-                .route("user-role", r -> r.path("/api/v1/user-role/**")
-                        .uri("lb://COMMON-SERVICE"))
-
-                // Route cho categories API
-                .route("categories", r -> r.path("/api/v1/categories/**")
-                        .uri("lb://COMMON-SERVICE"))
-
-                .route("categories", r -> r.path("/api/v1/files/**")
-                        .uri("lb://COMMON-SERVICE"))
+                // Route cho Workforce Service
+                .route("workforce-service", r -> r.path("/api/v1/wfm/**")
+                        .uri("lb://WORKFORCE-SERVICE"))
 
                 // Route cho auth API (public, không cần JWT)
                 .route("auth", r -> r.path("/api/v1/auth/**")
@@ -53,7 +39,6 @@ public class RouteConfig {
                 // Route cho Swagger resources
                 .route("swagger-resources", r -> r.path("/swagger-resources/**")
                         .uri("lb://COMMON-SERVICE"))
-
 
 
                 .build();

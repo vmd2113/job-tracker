@@ -40,7 +40,7 @@ public class LocalResolver extends AcceptHeaderLocaleResolver implements WebMvcC
         String languageHeader = request.getHeader("Accept-Language");
 
         return StringUtils.hasLength(languageHeader) ?
-                Locale.lookup(Locale.LanguageRange.parse(languageHeader), List.of(new Locale("en"), new Locale("fr"))) :
+                Locale.lookup(Locale.LanguageRange.parse(languageHeader), List.of(new Locale("en"), new Locale("fr"), new Locale("vi") )) :
                 Locale.getDefault();
     }
 

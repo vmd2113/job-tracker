@@ -33,7 +33,7 @@ public class CreateUserRequest {
     @NotBlank(message = "{validate.lastname.fail}")
     private String lastName;
 
-    @Size(min = 2, max = 100, message = "{validate.department.fail}")
+
     private Long departmentId;
 
     private String status = "Active";

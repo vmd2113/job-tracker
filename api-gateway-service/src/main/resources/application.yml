@@ -23,6 +23,9 @@ springdoc:
     path: /v3/api-docs
 
 spring:
+  web:
+    resources:
+      add-mappings: false  # Không thêm mapping của Spring Boot
   cloud:
     gateway:
       default-filters:

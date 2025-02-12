@@ -4,11 +4,9 @@ import com.duongw.common.config.i18n.Translator;
 import com.duongw.common.constant.ApiPath;
 import com.duongw.common.model.dto.response.ApiResponse;
 import com.duongw.common.model.dto.response.PageResponse;
-import com.duongw.commonservice.model.dto.request.category.SearchCategoryRequest;
 import com.duongw.commonservice.model.dto.request.category.UpdateCategoryRequest;
 import com.duongw.commonservice.model.dto.request.category.CreateCategoryRequest;
 import com.duongw.commonservice.model.dto.response.category.CategoryResponseDTO;
-import com.duongw.commonservice.model.entity.Category;
 import com.duongw.commonservice.service.ICategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +28,9 @@ public class CategoryController {
     private final ICategoryService categoryService;
 
     @Autowired
-    public CategoryController(ICategoryService categoryService) {
+    public CategoryController(ICategoryService categoryService, Translator translator) {
         this.categoryService = categoryService;
+
     }
 
     @GetMapping(path = "/")

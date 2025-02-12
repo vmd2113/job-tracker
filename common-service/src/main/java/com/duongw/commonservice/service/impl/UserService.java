@@ -61,7 +61,11 @@ public class UserService implements IUserService {
         userResponseDTO.setFirstName(user.getFirstName());
         userResponseDTO.setLastName(user.getLastName());
 
-        userResponseDTO.setDepartmentId(user.getDepartment().getDepartmentId());
+        if (user.getDepartment() != null) {
+            userResponseDTO.setDepartmentId(user.getDepartment().getDepartmentId());
+        }else{
+            userResponseDTO.setDepartmentId(null);
+        }
         userResponseDTO.setStatus(user.getStatus());
         log.info("USER_SERVICE  -> convertToUserResponseDTO");
         log.info("UserResponseDTO: {}", userResponseDTO);
@@ -236,7 +240,9 @@ public class UserService implements IUserService {
         userDetailDTO.setPhoneNumber(user.getPhoneNumber());
         userDetailDTO.setFirstName(user.getFirstName());
         userDetailDTO.setLastName(user.getLastName());
-        userDetailDTO.setDepartmentId(user.getDepartment().getDepartmentId());
+       if (user.getDepartment() != null) {
+           userDetailDTO.setDepartmentId(user.getDepartment().getDepartmentId());
+       }
 
         userDetailDTO.setStatus(user.getStatus());
         userDetailDTO.setRoles(itemService.getRoleByUserId(user.getUserId()));
@@ -258,6 +264,9 @@ public class UserService implements IUserService {
             Department department = departmentRepository.findById(user.getDepartmentId()).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("department.not-found")));
             newUser.setDepartment(department);
         }
+        if (user.getDepartmentId() == null) {
+            newUser.setDepartment(null);
+        }
         //TODO: set status
         newUser.setStatus(1L);
         Users saveUser = userRepository.save(newUser);
@@ -265,6 +274,7 @@ public class UserService implements IUserService {
         UserRole userRole = new UserRole();
         userRole.setUserId(newUser.getUserId());
         userRole.setRoleId(7L);
+
         Long userRoleId = userRoleService.save(userRole);
         log.info("USER_SERVICE  -> registerUser success");
         return convertToUserDetailDTO(saveUser);

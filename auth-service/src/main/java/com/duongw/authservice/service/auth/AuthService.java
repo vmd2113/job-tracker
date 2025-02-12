@@ -92,12 +92,14 @@ public class AuthService implements IAuthService {
 
         return TokenResponse.builder()
                 .accessToken(accessToken)
+                .username(user.getUsername())
                 .refreshToken(refreshToken)
                 .userId(user.getUserId())
                 .roles(user.getRoles().stream().map(RoleResponseDTO::getRoleCode).toList())
                 .build();
 
     }
+
 
     @Override
     public TokenResponse signUp(SignUpRequest signUpRequest) {

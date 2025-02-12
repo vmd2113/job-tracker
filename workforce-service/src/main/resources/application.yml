@@ -1,0 +1,32 @@
+server:
+  port: 8002
+
+#oracle
+
+spring:
+  application:
+    name: workforce-service
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521:ORCL
+    username: wfm
+    password: wfm
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.OracleDialect
+        format_sql: true
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
