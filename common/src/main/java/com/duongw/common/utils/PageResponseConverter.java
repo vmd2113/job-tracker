@@ -10,10 +10,10 @@ public class PageResponseConverter {
 
     public static <T> PageResponse<T> convertFromPage(Page<T> page) {
         return PageResponse.<T>builder()
-                .total(page.getTotalElements())  // Tổng số phần tử
-                .items(page.getContent())        // Danh sách phần tử trong trang
-                .pageNo(page.getNumber()+1)        // Số trang hiện tại (0-indexed)
-                .pageSize(page.getSize())        // Kích thước trang
+                .total(page.getTotalElements())
+                .items(page.getContent())
+                .pageNo(page.getNumber()+1)
+                .pageSize(page.getSize())
                 .build();
     }
 

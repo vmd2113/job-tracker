@@ -3,6 +3,7 @@ package com.duongw.commonservice.repository.search;
 import com.duongw.common.model.dto.response.PageResponse;
 import com.duongw.common.model.entity.AbstractEntityCriteriaQuery;
 import com.duongw.commonservice.model.dto.request.user.SearchUserDTO;
+import com.duongw.commonservice.model.dto.response.user.UserResponseDTO;
 import com.duongw.commonservice.model.entity.Users;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -11,6 +12,7 @@ import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -24,6 +26,7 @@ import java.util.List;
 public class UserSearchRepository extends AbstractEntityCriteriaQuery<Users> {
 
     private final EntityManager entityManager;
+
     public UserSearchRepository(EntityManager entityManager, EntityManager entityManager1) {
         super(entityManager);
         this.entityManager = entityManager1;
@@ -66,23 +69,41 @@ public class UserSearchRepository extends AbstractEntityCriteriaQuery<Users> {
         // Create TypedQuery for pagination
         TypedQuery<Users> typedQuery = entityManager.createQuery(query);
 
-        int zeroBasedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+        int zeroBasedPageNo = pageNo - 1; // Explicitly convert from 1-based to 0-based
+        int offset = zeroBasedPageNo * pageSize;
 
         // Apply pagination
         if (pageSize > 0) {
-            typedQuery.setFirstResult(zeroBasedPageNo * pageSize);
+            typedQuery.setFirstResult(offset);
             typedQuery.setMaxResults(pageSize);
+            log.info("Pagination - Page: {}, Size: {}, Offset: {}", pageNo, pageSize, offset);
         }
         // Execute query
         List<Users> users = typedQuery.getResultList();
         // Get total count
         Long totalCount = getTotalCount(searchDTO);
-        return PageResponse.<Users>builder()
+        List<UserResponseDTO> userResponseDTOList = users.stream().map(
+                user -> UserResponseDTO.builder()
+                        .userId(user.getUserId())
+                        .username(user.getUsername())
+                        .password(user.getPassword())
+                        .email(user.getEmail())
+                        .phoneNumber(user.getPhoneNumber())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .departmentId(user.getDepartment() == null ? null : user.getDepartment().getDepartmentId())
+                        .departmentName(user.getDepartment() == null ? null : user.getDepartment().getDepartmentName())
+                        .status(user.getStatus())
+                        .build()
+        ).toList();
+
+        return PageResponse.<UserResponseDTO>builder()
                 .total(totalCount)
-                .items(users)
+                .items(userResponseDTOList)
                 .pageNo(pageNo)
                 .pageSize(pageSize)
                 .build();
+
 
     }
 

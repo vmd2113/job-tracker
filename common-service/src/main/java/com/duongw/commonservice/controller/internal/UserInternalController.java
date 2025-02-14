@@ -36,7 +36,7 @@ public class UserInternalController {
         return ResponseEntity.ok(userDetailDTO);
     }
 
-    @PostMapping(path = "/")
+    @PostMapping(path = "/create-user-by-admin")
     public ResponseEntity<UserDetailDTO> createUser(@RequestBody CreateUserRequest user) {
         UserDetailDTO userDetailDTO = userService.registerUser(user);
         return ResponseEntity.ok(userDetailDTO);

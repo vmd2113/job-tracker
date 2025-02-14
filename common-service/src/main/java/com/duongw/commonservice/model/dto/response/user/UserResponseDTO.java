@@ -21,18 +21,15 @@ public class UserResponseDTO {
 
     private String email;
 
-
     private String phoneNumber;
-
 
     private String firstName;
 
-
     private String lastName;
-
 
     private Long departmentId;
 
+    private String departmentName;
 
     private Long status;
 }
