@@ -5,6 +5,7 @@ import com.duongw.common.constant.ApiPath;
 import com.duongw.common.model.dto.response.ApiResponse;
 import com.duongw.common.model.dto.response.PageResponse;
 import com.duongw.commonservice.model.dto.request.user.CreateUserRequest;
+import com.duongw.commonservice.model.dto.request.user.RegisterRequest;
 import com.duongw.commonservice.model.dto.response.user.UserDetailDTO;
 import com.duongw.commonservice.service.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,12 +37,21 @@ public class UserInternalController {
         return ResponseEntity.ok(userDetailDTO);
     }
 
-    @PostMapping(path = "/create-user-by-admin")
-    public ResponseEntity<UserDetailDTO> createUser(@RequestBody CreateUserRequest user) {
+
+    @PostMapping(path = "/register")
+    public ResponseEntity<UserDetailDTO> registerUser(@RequestBody RegisterRequest user) {
         UserDetailDTO userDetailDTO = userService.registerUser(user);
         return ResponseEntity.ok(userDetailDTO);
 
     }
+
+//    @PostMapping(path = "/create-user-by-admin")
+//    public ResponseEntity<UserDetailDTO> createUser(@RequestBody CreateUserRequest user) {
+//        UserDetailDTO userDetailDTO = userService.registerUser(user);
+//        return ResponseEntity.ok(userDetailDTO);
+//
+//    }
+
 
     // update password user
     @PatchMapping(path = "/update-password/{username}")

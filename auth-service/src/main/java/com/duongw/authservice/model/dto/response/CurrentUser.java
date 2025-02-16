@@ -1,17 +1,18 @@
-package com.duongw.commonservice.model.dto.response.user;
+package com.duongw.authservice.model.dto.response;
 
-import com.duongw.commonservice.model.dto.response.role.RoleResponse;
+import com.duongw.common.model.dto.response.RoleResponseDTO;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class UserDetailDTO {
+@Builder
+public class CurrentUser {
+
     private Long userId;
 
     private String username;
-
-    private String password;
 
     private String email;
 
@@ -27,5 +28,5 @@ public class UserDetailDTO {
 
     private Long status;
 
-    private List<RoleResponse> roles;
+    private List<RoleResponseDTO> roles;
 }

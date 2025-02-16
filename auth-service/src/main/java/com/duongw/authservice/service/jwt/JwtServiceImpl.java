@@ -122,6 +122,16 @@ public class JwtServiceImpl implements JwtService {
         }
     }
 
+    @Override
+    public long getAccessTokenExpiration() {
+        return accessTokenExpiration;
+    }
+
+    @Override
+    public long getRefreshTokenExpiration() {
+        return refreshTokenExpiration;
+    }
+
     public boolean validateToken(String token, TokenType type) {
         try {
             Jwts.parserBuilder()

@@ -17,7 +17,11 @@ public class TokenResponse {
 
     private String username;
 
-    private List<String> roles;
+    private List<RoleResponseDTO> roles;
+
+    private Long accessTokenExpiration;
+
+    private Long refreshTokenExpiration;
 
 
 }

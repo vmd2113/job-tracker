@@ -2,9 +2,11 @@ package com.duongw.commonservice.service;
 
 import com.duongw.common.model.dto.response.PageResponse;
 import com.duongw.commonservice.model.dto.request.user.CreateUserRequest;
+import com.duongw.commonservice.model.dto.request.user.RegisterRequest;
 import com.duongw.commonservice.model.dto.request.user.UpdateUserRequest;
 import com.duongw.commonservice.model.dto.response.user.UserDetailDTO;
 import com.duongw.commonservice.model.dto.response.user.UserResponseDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,7 +34,9 @@ public interface IUserService {
 
     UserDetailDTO getUserDetailByUsername(String username);
 
-    UserDetailDTO registerUser(CreateUserRequest user);
+
+    @Transactional
+    UserDetailDTO registerUser(RegisterRequest user);
 
     UserDetailDTO updatePassword(String username, String password);
 

@@ -5,6 +5,7 @@ import com.duongw.common.exception.AlreadyExistedException;
 import com.duongw.common.exception.ResourceNotFoundException;
 import com.duongw.common.model.dto.response.PageResponse;
 import com.duongw.commonservice.model.dto.request.user.CreateUserRequest;
+import com.duongw.commonservice.model.dto.request.user.RegisterRequest;
 import com.duongw.commonservice.model.dto.request.user.UpdateUserRequest;
 import com.duongw.commonservice.model.dto.response.user.UserDetailDTO;
 import com.duongw.commonservice.model.dto.response.user.UserResponseDTO;
@@ -63,7 +64,7 @@ public class UserService implements IUserService {
 
         if (user.getDepartment() != null) {
             userResponseDTO.setDepartmentId(user.getDepartment().getDepartmentId());
-        }else{
+        } else {
             userResponseDTO.setDepartmentId(null);
         }
         userResponseDTO.setStatus(user.getStatus());
@@ -240,9 +241,14 @@ public class UserService implements IUserService {
         userDetailDTO.setPhoneNumber(user.getPhoneNumber());
         userDetailDTO.setFirstName(user.getFirstName());
         userDetailDTO.setLastName(user.getLastName());
-       if (user.getDepartment() != null) {
-           userDetailDTO.setDepartmentId(user.getDepartment().getDepartmentId());
-       }
+
+        if (user.getDepartment() != null) {
+            userDetailDTO.setDepartmentId(user.getDepartment().getDepartmentId());
+            userDetailDTO.setDepartmentName(user.getDepartment().getDepartmentName());
+        } else {
+            userDetailDTO.setDepartmentId(null);
+            userDetailDTO.setDepartmentName(null);
+        }
 
         userDetailDTO.setStatus(user.getStatus());
         userDetailDTO.setRoles(itemService.getRoleByUserId(user.getUserId()));
@@ -251,22 +257,16 @@ public class UserService implements IUserService {
 
     @Transactional
     @Override
-    public UserDetailDTO registerUser(CreateUserRequest user) {
+    public UserDetailDTO registerUser(RegisterRequest user) {
         log.info("USER_SERVICE  -> registerUser");
         Users newUser = new Users();
         newUser.setEmail(user.getEmail());
         newUser.setUsername(user.getUsername());
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         newUser.setPhoneNumber(user.getPhoneNumber());
-        newUser.setFirstName(user.getFirstName());
-        newUser.setLastName(user.getLastName());
-        if (user.getDepartmentId() != null) {
-            Department department = departmentRepository.findById(user.getDepartmentId()).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("department.not-found")));
-            newUser.setDepartment(department);
-        }
-        if (user.getDepartmentId() == null) {
-            newUser.setDepartment(null);
-        }
+
+        newUser.setDepartment(null);
+
         //TODO: set status
         newUser.setStatus(1L);
         Users saveUser = userRepository.save(newUser);

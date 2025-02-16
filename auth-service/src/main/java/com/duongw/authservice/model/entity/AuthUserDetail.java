@@ -1,6 +1,6 @@
 package com.duongw.authservice.model.entity;
 
-import com.duongw.authservice.model.dto.response.RoleResponseDTO;
+import com.duongw.common.model.dto.response.RoleResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,10 +33,11 @@ public class AuthUserDetail implements UserDetails {
 
     private Long departmentId;
 
+    private String departmentName;
+
     private Long status;
 
     private List<RoleResponseDTO> roles;
-
 
 
     @Override

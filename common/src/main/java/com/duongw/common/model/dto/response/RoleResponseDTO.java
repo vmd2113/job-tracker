@@ -1,4 +1,4 @@
-package com.duongw.authservice.model.dto.response;
+package com.duongw.common.model.dto.response;
 
 
 import lombok.AllArgsConstructor;
