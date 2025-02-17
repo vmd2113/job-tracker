@@ -74,15 +74,7 @@ public class UserController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping(path = "/phone")
-    @Operation(summary = "find user by phone number", description = "Send a request via this API to find user by phone number")
 
-    public ResponseEntity<ApiResponse<?>> getUserByPhoneNumber(@RequestParam(name = "phoneNumber") String phoneNumber) {
-        log.info("USER_CONTROLLER  -> getUserByPhoneNumber");
-        UserResponseDTO user = userService.getUserByPhoneNumber(phoneNumber);
-        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("user.get-by-phone-number.success"), user);
-        return ResponseEntity.ok(apiResponse);
-    }
 
     @GetMapping(path = "/search")
     @Operation(summary = "search user by criteria", description = "Send a request via this API to search user by criteria")
@@ -134,5 +126,13 @@ public class UserController {
         return new ResponseEntity<>(apiResponse, HttpStatus.NO_CONTENT);
     }
 
+    @DeleteMapping(path = "/delete/list")
+    @Operation(summary = "delete user list", description = "Send a request via this API to delete user list")
+    public ResponseEntity<ApiResponse<?>> deleteUserList(@RequestBody List<Long> ids) {
+        log.info("USER_CONTROLLER  -> deleteUserList");
+        userService.deleteUserList(ids);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.NO_CONTENT, Translator.toLocate("user.delete.success"));
+        return new ResponseEntity<>(apiResponse, HttpStatus.NO_CONTENT);
+    }
 
 }

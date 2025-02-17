@@ -45,20 +45,6 @@ public class UserInternalController {
 
     }
 
-//    @PostMapping(path = "/create-user-by-admin")
-//    public ResponseEntity<UserDetailDTO> createUser(@RequestBody CreateUserRequest user) {
-//        UserDetailDTO userDetailDTO = userService.registerUser(user);
-//        return ResponseEntity.ok(userDetailDTO);
-//
-//    }
-
-
-    // update password user
-    @PatchMapping(path = "/update-password/{username}")
-    public ResponseEntity<?> updatePassword(@PathVariable(name = "username") String username, @RequestBody String password) {
-        UserDetailDTO userResponseDTO = userService.updatePassword(username, password);
-        return new ResponseEntity<>(userResponseDTO, HttpStatus.OK);
-    }
 
 
 }

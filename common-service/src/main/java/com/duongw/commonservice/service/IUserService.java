@@ -1,9 +1,7 @@
 package com.duongw.commonservice.service;
 
 import com.duongw.common.model.dto.response.PageResponse;
-import com.duongw.commonservice.model.dto.request.user.CreateUserRequest;
-import com.duongw.commonservice.model.dto.request.user.RegisterRequest;
-import com.duongw.commonservice.model.dto.request.user.UpdateUserRequest;
+import com.duongw.commonservice.model.dto.request.user.*;
 import com.duongw.commonservice.model.dto.response.user.UserDetailDTO;
 import com.duongw.commonservice.model.dto.response.user.UserResponseDTO;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,17 +26,20 @@ public interface IUserService {
 
     UserResponseDTO updateUserStatus(Long id, String status);
 
+    UserResponseDTO changeUserPassword(Long id, ChangePasswordRequest changePasswordRequest);
+
+    UserDetailDTO changeUserInfo(Long id, UpdateUserInfoRequest updateUserInfoRequest);
+
     void deleteUser(Long id);
+    void deleteUserList(List<Long> ids);
 
     UserDetailDTO getUserDetail(Long id);
 
     UserDetailDTO getUserDetailByUsername(String username);
 
-
     @Transactional
     UserDetailDTO registerUser(RegisterRequest user);
 
-    UserDetailDTO updatePassword(String username, String password);
 
     PageResponse<?> searchUserByCriteria(
 
@@ -54,6 +55,8 @@ public interface IUserService {
             String sortDirection
 
     );
+
+
 }
 
 

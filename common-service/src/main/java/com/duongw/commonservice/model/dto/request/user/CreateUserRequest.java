@@ -16,13 +16,12 @@ import lombok.NoArgsConstructor;
 public class CreateUserRequest {
 
     @NotBlank(message = "{validate.username.fail}")
+    @Size(min = 6, max = 500, message = "{validate.username-length.fail}")
     private String username;
 
     @Email(message = "{validate.email.fail}")
+    @Size(max = 500, message = "{validate.email-length.fail}")
     private String email;
-
-    @NotBlank(message = "{validate.password.fail}")
-    private String password;
 
     @PhoneNumber
     private String phoneNumber;
@@ -31,12 +30,12 @@ public class CreateUserRequest {
     private String firstName;
 
     @NotBlank(message = "{validate.lastname.fail}")
+    @Size( max = 500, message = "{validate.lastname-length.fail}")
     private String lastName;
-
 
     private Long departmentId;
 
-    private String status = "Active";
+    private Long status;
 
 
 }

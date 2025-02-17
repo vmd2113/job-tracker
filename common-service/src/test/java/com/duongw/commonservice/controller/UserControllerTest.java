@@ -12,8 +12,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.MockBeans;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,22 +31,6 @@ public class UserControllerTest {
     private CreateUserRequest createUserRequestInit;
 
 
-    @BeforeEach
-    void setUp() {
-        log.info("setUp");
-
-        createUserRequestInit = CreateUserRequest.builder()
-                .username("username")
-                .email("email.test@gmail.com")
-                .phoneNumber("098765123")
-                .firstName("firstName")
-                .lastName("lastName")
-                .departmentId(1L)
-                .status("Active")
-                .build();
-
-
-    }
 
     @Test
     void createUser(@RequestBody CreateUserRequest createUserRequest) {
