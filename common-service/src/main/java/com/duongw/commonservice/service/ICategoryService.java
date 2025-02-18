@@ -1,17 +1,14 @@
 package com.duongw.commonservice.service;
 
 import com.duongw.common.model.dto.response.PageResponse;
-import com.duongw.commonservice.model.dto.request.category.SearchCategoryRequest;
-import com.duongw.commonservice.model.dto.request.category.UpdateCategoryRequest;
 import com.duongw.commonservice.model.dto.request.category.CreateCategoryRequest;
+import com.duongw.commonservice.model.dto.request.category.UpdateCategoryRequest;
 import com.duongw.commonservice.model.dto.response.category.CategoryResponseDTO;
-
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface ICategoryService {
-
 
 
     CategoryResponseDTO getCategoryById(Long id);
@@ -26,6 +23,7 @@ public interface ICategoryService {
 
     void deleteCategory(Long id);
 
+    void deleteCategoryList(List<Long> ids);
 
     PageResponse<CategoryResponseDTO> searchCategories(String code, String name, Pageable pageable);
 }

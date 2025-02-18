@@ -11,6 +11,7 @@ import com.duongw.commonservice.model.dto.response.category.CategoryResponseDTO;
 import com.duongw.commonservice.model.entity.Category;
 import com.duongw.commonservice.repository.CategoryRepository;
 import com.duongw.commonservice.service.ICategoryService;
+import com.duongw.commonservice.validator.CategoryValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,11 +25,13 @@ import java.util.List;
 public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryValidator categoryValidator;
 
 
     @Autowired
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, CategoryValidator categoryValidator) {
         this.categoryRepository = categoryRepository;
+        this.categoryValidator = categoryValidator;
     }
 
     public CategoryResponseDTO convertToCategoryResponseDTO(Category category) {
@@ -55,7 +58,7 @@ public class CategoryService implements ICategoryService {
     @Override
     public CategoryResponseDTO getCategoryById(Long id) {
         log.info("CATEGORY_SERVICE  -> getCategoryById");
-        return convertToCategoryResponseDTO(categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("category.not.found"))));
+        return convertToCategoryResponseDTO(categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("category.not.found.id"))));
     }
 
     @Override
@@ -63,7 +66,7 @@ public class CategoryService implements ICategoryService {
         log.info("CATEGORY_SERVICE  -> getCategoryByName");
         Category category = categoryRepository.findByCategoryName(name);
         if (category == null) {
-            throw new ResourceNotFoundException(Translator.toLocate("category.not.found"));
+            throw new ResourceNotFoundException(Translator.toLocate("category.not.found.name"));
         }
         return convertToCategoryResponseDTO(categoryRepository.findByCategoryName(name));
     }
@@ -75,60 +78,63 @@ public class CategoryService implements ICategoryService {
         return categoryList.stream().map(this::convertToCategoryResponseDTO).toList();
     }
 
-    private boolean validatorCategory(String categoryCode, String categoryName) {
-        if (categoryRepository.existsByCategoryCode(categoryCode)) {
-            throw new AlreadyExistedException(Translator.toLocate("category.exist.code"));
-        }
-        if (categoryRepository.existsByCategoryName(categoryName)) {
-            throw new AlreadyExistedException(Translator.toLocate("category.exist.name"));
-        }
-        return false;
-    }
 
     @Override
+
     public CategoryResponseDTO createCategory(CreateCategoryRequest category) {
+
         log.info("CATEGORY_SERVICE  -> createCategory");
-        if (validatorCategory(category.getCategoryCode(), category.getCategoryName())) {
-            log.error("CATEGORY_SERVICE  -> error validateCategory");
-            throw new AlreadyExistedException(Translator.toLocate("category.exist"));
+        try {
+            categoryValidator.validateCreateCategory(category);
+            Category category1 = new Category();
+            category1.setCategoryCode(category.getCategoryCode());
+            category1.setCategoryName(category.getCategoryName());
+            category1.setStatus(category.getStatus());
+            //TODO: set user
+            category1.setCreatedByUser(1L);
+            log.info("CATEGORY_SERVICE  -> createCategory success");
+            return convertToCategoryResponseDTO(categoryRepository.save(category1));
+        } catch (AlreadyExistedException e) {
+            throw new AlreadyExistedException(e.getMessage());
         }
-        Category category1 = new Category();
-        category1.setCategoryCode(category.getCategoryCode());
-        category1.setCategoryName(category.getCategoryName());
-        category1.setStatus(category.getStatus());
-        //TODO: set user
-        category1.setCreatedByUser(1L);
-        log.info("CATEGORY_SERVICE  -> createCategory success");
-        return convertToCategoryResponseDTO(categoryRepository.save(category1));
     }
 
 
     @Override
     public CategoryResponseDTO updateCategory(Long id, UpdateCategoryRequest category) {
-        log.info("CATEGORY_SERVICE  -> updateCategory");
-        Category updateCategory = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("category.not.found")));
-        if (validatorCategory(category.getCategoryCode(), category.getCategoryName())) {
-            log.error("CATEGORY_SERVICE  -> error validateCategory in updateCategory");
-            throw new AlreadyExistedException(Translator.toLocate("category.exist"));
+        try {
+            log.info("CATEGORY_SERVICE  -> updateCategory");
+            Category updateCategory = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("category.not.found")));
+            categoryValidator.validateUpdateCategory(category, id);
+            updateCategory.setCategoryCode(category.getCategoryCode());
+            updateCategory.setCategoryName(category.getCategoryName());
+            updateCategory.setStatus(category.getStatus());
+            //TODO: set user
+            updateCategory.setUpdatedByUser(1L);
+            log.info("CATEGORY_SERVICE  -> updateCategory success");
+            return convertToCategoryResponseDTO(categoryRepository.save(updateCategory));
+        } catch (AlreadyExistedException e) {
+            throw new AlreadyExistedException(e.getMessage());
         }
-        updateCategory.setCategoryCode(category.getCategoryCode());
-        updateCategory.setCategoryName(category.getCategoryName());
-        updateCategory.setStatus(category.getStatus());
-        //TODO: set user
-        updateCategory.setUpdatedByUser(1L);
-        log.info("CATEGORY_SERVICE  -> updateCategory success");
-        return convertToCategoryResponseDTO(categoryRepository.save(updateCategory));
     }
 
     @Override
     public void deleteCategory(Long id) {
-        log.info("CATEGORY_SERVICE  -> deleteCategory");
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("category.not.found")));
+        log.info("CATEGORY_SERVICE  -> deleteCategory with id: {}", id);
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("category.not.found.id")));
         categoryRepository.delete(category);
 
     }
 
+    @Override
+    public void deleteCategoryList(List<Long> ids) {
+        log.info("CATEGORY_SERVICE  -> deleteCategoryList");
+        for (Long id : ids) {
+            Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("category.not.found.id")));
+            categoryRepository.delete(category);
+        }
 
+    }
 
     @Override
     public PageResponse<CategoryResponseDTO> searchCategories(String code, String name, Pageable pageable) {

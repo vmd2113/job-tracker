@@ -28,7 +28,7 @@ public class CategoryController {
     private final ICategoryService categoryService;
 
     @Autowired
-    public CategoryController(ICategoryService categoryService, Translator translator) {
+    public CategoryController(ICategoryService categoryService) {
         this.categoryService = categoryService;
 
     }
@@ -95,6 +95,15 @@ public class CategoryController {
         log.info("CATEGORY_CONTROLLER  -> deleteCategory success");
         return new ResponseEntity<>(apiResponse, HttpStatus.NO_CONTENT);
 
+    }
+
+    @DeleteMapping(path = "/delete/list")
+    @Operation(summary = "delete category list", description = "Send a request via this API to delete category list")
+    public ResponseEntity<ApiResponse<?>> deleteCategoryList(@RequestBody List<Long> ids) {
+        log.info("CATEGORY_CONTROLLER  -> deleteCategoryList");
+        categoryService.deleteCategoryList(ids);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.NO_CONTENT, Translator.toLocate("category.delete.success"));
+        return new ResponseEntity<>(apiResponse, HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/search")

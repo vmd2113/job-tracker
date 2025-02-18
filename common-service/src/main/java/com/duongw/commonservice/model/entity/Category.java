@@ -36,6 +36,4 @@ public class Category extends BaseEntity {
     private List<Item> items;
 
 
-
-
 }
