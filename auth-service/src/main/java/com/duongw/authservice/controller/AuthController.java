@@ -43,7 +43,6 @@ public class AuthController {
     }
 
 
-
     @PostMapping(path = "/register")
     public ResponseEntity<ApiResponse<?>> signUp(@RequestBody SignUpRequest signUpRequest) {
         log.info("AUTH_CONTROLLER  -> signUp");
@@ -62,7 +61,7 @@ public class AuthController {
 
     public ResponseEntity<ApiResponse<?>> logOut(){
         log.info("AUTH_CONTROLLER  -> logOut");
-        return null;
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(path = "/current-user")

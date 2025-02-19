@@ -25,7 +25,6 @@ public class WorksController {
         this.workService = workService;
     }
 
-
     @GetMapping(path = "/")
     public ResponseEntity<ApiResponse<?>> getAllWork() {
 

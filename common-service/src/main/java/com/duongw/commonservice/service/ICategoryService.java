@@ -15,6 +15,8 @@ public interface ICategoryService {
 
     CategoryResponseDTO getCategoryByName(String name);
 
+    CategoryResponseDTO getCategoryByCode(String code);
+
     List<CategoryResponseDTO> getAllCategory();
 
     CategoryResponseDTO createCategory(CreateCategoryRequest category);
@@ -25,5 +27,5 @@ public interface ICategoryService {
 
     void deleteCategoryList(List<Long> ids);
 
-    PageResponse<CategoryResponseDTO> searchCategories(String code, String name, Pageable pageable);
+    PageResponse<CategoryResponseDTO> searchCategories(String code, String name, int pageNo, int pageSize, String sortBy, String sortDirect);
 }

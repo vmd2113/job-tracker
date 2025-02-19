@@ -65,6 +65,15 @@ public class CategoryController {
 
     }
 
+    @GetMapping(path = "/code")
+    @Operation(summary = "get data of category by code", description = "Send a request via this API to get  data of category by code")
+    public ResponseEntity<ApiResponse<?>> getCategoryByCode(@RequestParam(name = "code") String code) {
+        log.info("CATEGORY_CONTROLLER  -> getCategoryByCode");
+        CategoryResponseDTO category = categoryService.getCategoryByCode(code);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("category.get-by-code.success"), category);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
+
     @PostMapping(path = "/")
     @Operation(summary = "create and add a category ", description = "Send a request via this API to create a new category")
     public ResponseEntity<ApiResponse<?>> createCategory(@RequestBody CreateCategoryRequest category) {
@@ -107,18 +116,17 @@ public class CategoryController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<?>> searchCategories(@RequestParam(required = false, name = "code") String categoryCode,
-                                                           @RequestParam(required = false, name = "name") String categoryName,
+    public ResponseEntity<ApiResponse<?>> searchCategories(@RequestParam(required = false, name = "categoryCode") String categoryCode,
+                                                           @RequestParam(required = false, name = "categoryName") String categoryName,
                                                            @RequestParam(value = "page", defaultValue = "0") int page,
                                                            @RequestParam(value = "size", defaultValue = "10") int size,
-                                                           @RequestParam(value = "sort", defaultValue = "updateDate,desc", required = false) String sort) {
+                                                           @RequestParam(value = "sortBy", defaultValue = "updateDate") String sortBy,
+                                                           @RequestParam(value = "sortDirection", defaultValue = "asc") String sortDir) {
+
         // Convert "sort" parameter into Pageable
         log.info("CATEGORY_CONTROLLER  -> searchCategories");
-        String[] sortParams = sort.split(",");
-        Sort.Order order = new Sort.Order(Sort.Direction.fromString(sortParams[1]), sortParams[0]);
-        Pageable pageable = PageRequest.of(page, size, Sort.by(order));
 
-        PageResponse<CategoryResponseDTO> pageResponse = categoryService.searchCategories(categoryCode, categoryName, pageable);
+        PageResponse<CategoryResponseDTO> pageResponse = categoryService.searchCategories(categoryCode, categoryName, page, size, sortBy, sortDir);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("category.search.success"), pageResponse);
         log.info("CATEGORY_CONTROLLER  -> searchCategories success");
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
