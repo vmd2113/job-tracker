@@ -20,7 +20,7 @@ public class UpdateItemRequest {
 
     private Long parentItemId;
 
-    private String categoryCode;
+    private Long categoryId;
 
     private Long status;
 }

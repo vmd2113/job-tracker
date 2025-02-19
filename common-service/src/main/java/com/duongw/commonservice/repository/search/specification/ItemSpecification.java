@@ -24,6 +24,9 @@ public class ItemSpecification extends BaseSpecification<Item> {
         if (itemName != null && !itemName.isEmpty()) {
             spec = spec.and(new ItemSpecification(
                     new SearchCriteria("itemName", ":", itemName)));
+
+        }
+        if (itemCode != null && !itemCode.isEmpty()) {
             spec = spec.and(new ItemSpecification(
                     new SearchCriteria("itemCode", ":", itemCode)));
         }

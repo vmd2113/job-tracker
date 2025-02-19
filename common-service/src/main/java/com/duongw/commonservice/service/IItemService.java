@@ -29,6 +29,8 @@ public interface IItemService {
 
     void deleteItem(Long id);
 
+    void deleteListItem(List<Long> ids);
+
     RoleResponse convertToRoleResponseDTO(Long id);
 
     List<RoleResponse> getAllRoles();

@@ -123,7 +123,15 @@ public class ItemController {
     public ResponseEntity<ApiResponse<?>> deleteItem(@PathVariable(name = "id") Long id) {
         log.info("ITEM_CONTROLLER -> deleteItem");
         itemService.deleteItem(id);
-        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("item.delete.success"));
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.NO_CONTENT, Translator.toLocate("item.delete.success"));
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @DeleteMapping(path = "/delete/list")
+    public ResponseEntity<ApiResponse<?>> deleteListItem(@RequestBody List<Long> ids) {
+        log.info("ITEM_CONTROLLER -> deleteListItem");
+        itemService.deleteListItem(ids);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.NO_CONTENT, Translator.toLocate("item.delete.success"));
         return ResponseEntity.ok(apiResponse);
     }
 }

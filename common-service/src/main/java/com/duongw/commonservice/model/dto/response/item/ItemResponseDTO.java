@@ -22,9 +22,13 @@ public class ItemResponseDTO {
 
     private Long parentItemId;
 
+    private String parentItemName;
+
     private Long categoryId;
 
     private String categoryCode;
+
+    private String categoryName;
 
     private Long status;
 }
