@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WorkTypeRepository extends JpaRepository<WorkType, Long>, JpaSpecificationExecutor<WorkType> {
+    WorkType findByWorkTypeCode(String workTypeCode);
+    WorkType findByWorkTypeName(String workTypeName);
     boolean existsByWorkTypeCode(String workTypeCode);
     boolean existsByWorkTypeName(String workTypeName);
 

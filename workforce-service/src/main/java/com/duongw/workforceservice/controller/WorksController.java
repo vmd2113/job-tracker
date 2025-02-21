@@ -67,6 +67,13 @@ public class WorksController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @DeleteMapping(path = "/delete/list")
+    public ResponseEntity<ApiResponse<?>> deleteListWorks(@RequestBody List<Long> ids) {
+        workService.deleteListWorks(ids);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.NO_CONTENT, Translator.toLocate("work.delete-list.success"));
+        return ResponseEntity.ok(apiResponse);
+    }
+
     @GetMapping(path = "/search")
     public ResponseEntity<ApiResponse<?>> searchWorks(
             @RequestParam(name = "workCode", required = false) String workCode,

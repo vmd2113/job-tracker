@@ -13,6 +13,6 @@ public class UpdateWorkConfigRequest {
 
     private Long workTypeId;
     private Long priorityId;
-    private Long oldStatus;
-    private Long newStatus;
+    private Long oldStatusId;
+    private Long newStatusId;
 }

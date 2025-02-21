@@ -15,7 +15,7 @@ public class UpdateDepartmentRequest {
 
     private String departmentCode;
 
-    private String departmentParentCode;
+    private Long departmentParentId;
 
     private Long status;
 }

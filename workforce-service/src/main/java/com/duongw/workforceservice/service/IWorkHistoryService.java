@@ -18,5 +18,7 @@ public interface IWorkHistoryService {
 
     void deleteWorkHistoryById(Long id);
 
+    void deleteListWorkHistory(List<Long> ids);
+
     List<WorkHistoryResponseDTO> searchWorkHistory(int page, int size, String workCode, String workContent, Long workTypeId, Long priorityId, Long status, String startTime, String endTime, String finishTime, Long assignedUserId, String sortBy, String sortDirection);
 }

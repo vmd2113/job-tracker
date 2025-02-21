@@ -59,6 +59,12 @@ public class WorkConfigBusinessController {
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.NO_CONTENT, Translator.toLocate("work-config.delete.success"));
         return ResponseEntity.ok(apiResponse);
     }
+    @DeleteMapping(path = "/delete/list")
+    public ResponseEntity<ApiResponse<?>> deleteListWorkConfig(@RequestBody List<Long> ids) {
+        workConfigBusinessService.deleteListWorkConfig(ids);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.NO_CONTENT, Translator.toLocate("work-config.delete-list.success"));
+        return ResponseEntity.ok(apiResponse);
+    }
 
     @GetMapping(path = "/search")
     public ResponseEntity<ApiResponse<?>> searchWorkConfig(
@@ -66,15 +72,14 @@ public class WorkConfigBusinessController {
             @RequestParam(required = false, name = "priorityId") Long priorityId,
             @RequestParam(required = false, name = "oldStatus") Long oldStatus,
             @RequestParam(required = false, name = "newStatus") Long newStatus,
-            @RequestParam(defaultValue = "1") int pageNo,
-            @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "updateDate") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDirection) {
+            @RequestParam(defaultValue = "1", name = "page") int pageNo,
+            @RequestParam(defaultValue = "10", name = "size") int pageSize,
+            @RequestParam(defaultValue = "updateDate", name = "sortBy") String sortBy,
+            @RequestParam(defaultValue = "desc", name = "sortDirection") String sortDirection) {
         log.info("WORK_CONFIG_BUSINESS_CONTROLLER  -> searchWorkConfig");
         PageResponse<WorkConfigResponseDTO> workConfigResponseDTOPageResponse = workConfigBusinessService.searchWorkConfig(workTypeName, priorityId, oldStatus, newStatus, pageNo, pageSize, sortBy, sortDirection);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("work-config.search.success"), workConfigResponseDTOPageResponse);
         return ResponseEntity.ok(apiResponse);
     }
-
 
 }

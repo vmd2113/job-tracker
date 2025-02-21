@@ -19,6 +19,8 @@ public class DepartmentResponseDTO {
 
     private Long departmentParentId;
 
+    private String departmentParentName;
+
     private Long status;
 
 

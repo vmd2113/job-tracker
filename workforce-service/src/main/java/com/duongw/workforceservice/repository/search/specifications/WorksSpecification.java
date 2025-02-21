@@ -12,7 +12,7 @@ public class WorksSpecification extends BaseSpecification<Works> {
     }
 
     public static Specification<Works> searchByMultipleFields(String workCode, String workContent, Long workTypeId,
-                                                              Long priorityId, Long status, String startTime, String endTime, String finishTime, Long assignedUserId) {
+                                                              Long priorityId, Long status, String startTime, String endTime,  Long assignedUserId) {
 
         Specification<Works> specification = Specification.where(null);
 
@@ -59,10 +59,7 @@ public class WorksSpecification extends BaseSpecification<Works> {
                     new SearchCriteria("endTime", "<=", endTime.trim())));
         }
 
-        if (finishTime != null && !finishTime.trim().isEmpty()) {
-            specification = specification.and(new WorksSpecification(
-                    new SearchCriteria("finishTime", ">=", finishTime.trim())));
-        }
+
 
         return specification;
     }

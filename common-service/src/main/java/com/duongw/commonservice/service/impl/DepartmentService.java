@@ -1,6 +1,7 @@
 package com.duongw.commonservice.service.impl;
 
 import com.duongw.common.config.i18n.Translator;
+import com.duongw.common.exception.ResourceNotFoundException;
 import com.duongw.common.model.dto.response.PageResponse;
 import com.duongw.commonservice.model.dto.request.department.CreateDepartmentRequest;
 import com.duongw.commonservice.model.dto.request.department.UpdateDepartmentRequest;
@@ -39,6 +40,13 @@ public class DepartmentService implements IDepartmentService {
         departmentResponseDTO.setDepartmentName(department.getDepartmentName());
         departmentResponseDTO.setDepartmentCode(department.getDepartmentCode());
 
+        Department parentDepartment = department.getParentDepartment();
+
+        if (parentDepartment != null) {
+            departmentResponseDTO.setDepartmentParentName(parentDepartment.getDepartmentName());
+            departmentResponseDTO.setDepartmentParentId(parentDepartment.getDepartmentId());
+
+        }
         departmentResponseDTO.setStatus(department.getStatus());
         return departmentResponseDTO;
     }
@@ -52,7 +60,7 @@ public class DepartmentService implements IDepartmentService {
 
     @Override
     public DepartmentResponseDTO getDepartmentById(Long id) {
-        Department department = departmentRepository.findById(id).orElseThrow(() -> new RuntimeException(Translator.toLocate("department.not.found")));
+        Department department = departmentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("department.not.found")));
         return convertToDepartmentResponseDTO(department);
     }
 
@@ -75,11 +83,15 @@ public class DepartmentService implements IDepartmentService {
         newDepartment.setDepartmentName(department.getDepartmentName());
         newDepartment.setDepartmentCode(department.getDepartmentCode());
 
-        if (department.getDepartmentParentCode() == null) {
+        if (department.getDepartmentParentId() == null) {
             newDepartment.setParentDepartment(null);
+
+        }else{
+            Department parentDepartment = departmentRepository.findById(department.getDepartmentParentId()).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("department.not.found")));
+            newDepartment.setParentDepartment(parentDepartment);
+
         }
-        Department parentDepartment = departmentRepository.findByDepartmentCode(department.getDepartmentParentCode());
-        newDepartment.setParentDepartment(parentDepartment);
+
 
         newDepartment.setStatus(department.getStatus());
         return convertToDepartmentResponseDTO(departmentRepository.save(newDepartment));
@@ -88,22 +100,25 @@ public class DepartmentService implements IDepartmentService {
 
     @Override
     public DepartmentResponseDTO updateDepartment(Long id, UpdateDepartmentRequest department) {
-        Department updateDepartment = departmentRepository.findById(id).orElseThrow(() -> new RuntimeException(Translator.toLocate("department.not.found")));
+        Department updateDepartment = departmentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("department.not.found")));
         updateDepartment.setDepartmentName(department.getDepartmentName());
         updateDepartment.setDepartmentCode(department.getDepartmentCode());
         updateDepartment.setStatus(department.getStatus());
 
-        if (department.getDepartmentParentCode() == null) {
+        if (department.getDepartmentParentId() == null) {
             updateDepartment.setParentDepartment(null);
         }
-        Department parentDepartment = departmentRepository.findByDepartmentCode(department.getDepartmentParentCode());
+        Department parentDepartment = departmentRepository.findById(department.getDepartmentParentId()).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("department.not.found")));
         updateDepartment.setParentDepartment(parentDepartment);
-        return convertToDepartmentResponseDTO(departmentRepository.save(updateDepartment));
+
+        Department save = departmentRepository.saveAndFlush(updateDepartment);
+        return convertToDepartmentResponseDTO(save);
+
     }
 
     @Override
     public DepartmentResponseDTO updateDepartmentStatus(Long id, String status) {
-        Department updateDepartment = departmentRepository.findById(id).orElseThrow(() -> new RuntimeException(Translator.toLocate("department.not.found")));
+        Department updateDepartment = departmentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("department.not.found")));
         //TODO: set status
         updateDepartment.setStatus(1L);
         return convertToDepartmentResponseDTO(departmentRepository.save(updateDepartment));

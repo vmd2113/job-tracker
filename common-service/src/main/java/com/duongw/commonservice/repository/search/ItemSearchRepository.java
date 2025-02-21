@@ -16,7 +16,6 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 
 public class ItemSearchRepository {
-
     private final ItemRepository itemRepository;
 
     public PageResponse<ItemResponseDTO> searchItems(String itemName, String itemCode, String categoryCode, int pageNo, int pageSize, String sortBy, String sortDirection) {

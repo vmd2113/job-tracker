@@ -63,6 +63,13 @@ public class WorkHistoryController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @DeleteMapping(path = "/delete/list")
+    public ResponseEntity<ApiResponse<?>> deleteListWorkHistory(@RequestBody List<Long> ids) {
+        workHistoryService.deleteListWorkHistory(ids);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.NO_CONTENT, Translator.toLocate("work-history.delete-list.success"));
+        return ResponseEntity.ok(apiResponse);
+    }
+
     @GetMapping(path = "/search")
     public ResponseEntity<ApiResponse<?>> searchWorkHistory(@RequestParam(name = "page", defaultValue = "1") int page,
                                                             @RequestParam(name = "size", defaultValue = "10") int size,

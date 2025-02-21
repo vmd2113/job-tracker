@@ -45,7 +45,6 @@ public class WorkTypeController {
 
     }
 
-
     @PostMapping(path = "/")
     public ResponseEntity<ApiResponse<?>> createWorkType(@RequestBody CreateWorkTypeRequest workType) {
         log.info("WORK_TYPE_CONTROLLER  -> createWorkType");
@@ -78,14 +77,22 @@ public class WorkTypeController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @DeleteMapping(path = "/delete/list")
+    public ResponseEntity<ApiResponse<?>> deleteListWorkType(@RequestBody List<Long> ids) {
+        log.info("WORK_TYPE_CONTROLLER  -> deleteListWorkType");
+        workTypeService.deleteListWorkTypes(ids);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.NO_CONTENT, Translator.toLocate("work-type.delete-list.success"));
+        return ResponseEntity.ok(apiResponse);
+    }
+
     @GetMapping(path = "/search")
     public ResponseEntity<ApiResponse<?>> searchWorkType(
             @RequestParam(name  = "workTypeCode", required = false) String workTypeCode,
             @RequestParam(name  = "workTypeName", required = false) String workTypeName,
-            @RequestParam(defaultValue = "1") int pageNo,
-            @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "updateDate") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDirection) {
+            @RequestParam(name = "page",defaultValue = "1") int pageNo,
+            @RequestParam(name = "size", defaultValue = "10") int pageSize,
+            @RequestParam(name = "sortBy",defaultValue = "updateDate") String sortBy,
+            @RequestParam(name = "sortDirection", defaultValue = "desc") String sortDirection) {
         log.info("WORK_TYPE_CONTROLLER  -> searchWorkType");
         PageResponse<WorkTypeResponseDTO> workTypeResponseDTOPageResponse = workTypeService.searchWorkType(workTypeCode, workTypeName, pageNo, pageSize, sortBy, sortDirection);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("work-type.search.success"), workTypeResponseDTOPageResponse);

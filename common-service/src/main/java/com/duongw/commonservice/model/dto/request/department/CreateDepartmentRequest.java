@@ -18,7 +18,7 @@ public class CreateDepartmentRequest {
 
     private String departmentName;
 
-    private String departmentParentCode;
+    private Long departmentParentId;
 
     private Long status;
 }

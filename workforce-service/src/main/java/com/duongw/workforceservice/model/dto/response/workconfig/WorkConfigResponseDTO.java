@@ -19,13 +19,16 @@ public class WorkConfigResponseDTO {
     private Long workConfigId;
 
     private String workTypeName;
-    private WorkTypeResponseDTO workType;
+    private Long workTypeId;
+
 
     private Long priorityId;
+    private String priorityName;
 
 
+    private Long oldStatusId;
+    private String oldStatusName;
 
-    private Long oldStatus;
-
-    private Long newStatus;
+    private Long newStatusId;
+    private String newStatusName;
 }

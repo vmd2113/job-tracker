@@ -103,6 +103,12 @@ public class WorkHistoryService implements IWorkHistoryService {
 
     }
 
+    @Override
+    public void deleteListWorkHistory(List<Long> ids){
+        for(Long id: ids)
+            deleteWorkHistoryById(id);
+    }
+
     //TODO: search work history
 
     @Override

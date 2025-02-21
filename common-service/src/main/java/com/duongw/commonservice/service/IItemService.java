@@ -13,6 +13,8 @@ public interface IItemService {
 
     List<ItemResponseDTO> getItemByCategoryId(Long categoryId);
 
+    List<ItemResponseDTO> getCategoryCode(String categoryCode);
+
     List<ItemResponseDTO> getItemByParentItemId(Long parentItemId);
 
     ItemResponseDTO getItemById(Long id);
@@ -36,6 +38,8 @@ public interface IItemService {
     List<RoleResponse> getAllRoles();
 
     List<RoleResponse> getRoleByUserId(Long userId);
+
+    ItemResponseDTO getItemByIdAndCategoryId(Long itemId, Long categoryId);
 
     PageResponse<ItemResponseDTO> searchItems(String itemName, String itemCode, String categoryCode, int pageNo, int pageSize, String sortBy, String sortDirection);
 }

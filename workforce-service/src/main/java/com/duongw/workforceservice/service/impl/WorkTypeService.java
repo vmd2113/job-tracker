@@ -11,6 +11,7 @@ import com.duongw.workforceservice.model.entity.WorkType;
 import com.duongw.workforceservice.repository.WorkTypeRepository;
 import com.duongw.workforceservice.repository.search.WorkTypeSearchRepository;
 import com.duongw.workforceservice.service.IWorkTypeService;
+import com.duongw.workforceservice.validator.WorkTypeValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class WorkTypeService implements IWorkTypeService {
 
     private final WorkTypeRepository workTypeRepository;
     private final WorkTypeSearchRepository workTypeSearchRepository;
+    private final WorkTypeValidator workTypeValidator;
 
     private WorkType convertToWorkType(WorkTypeResponseDTO workTypeResponseDTO) {
         WorkType workType = new WorkType();
@@ -46,19 +48,12 @@ public class WorkTypeService implements IWorkTypeService {
                 .build();
     }
 
-    private boolean validateWorkType(String workTypeCode, String workTypeName) {
-        if (workTypeRepository.existsByWorkTypeCode(workTypeCode) || workTypeRepository.existsByWorkTypeName(workTypeName)) {
-            log.error("WORK_TYPE_SERVICE  -> validateWorkType fail");
-            throw new AlreadyExistedException(Translator.toLocate("workType.exist"));
-
-        }
-        return true;
-    }
 
     @Autowired
-    public WorkTypeService(WorkTypeRepository workTypeRepository, WorkTypeSearchRepository workTypeSearchRepository) {
+    public WorkTypeService(WorkTypeRepository workTypeRepository, WorkTypeSearchRepository workTypeSearchRepository, WorkTypeValidator workTypeValidator) {
         this.workTypeRepository = workTypeRepository;
         this.workTypeSearchRepository = workTypeSearchRepository;
+        this.workTypeValidator = workTypeValidator;
     }
 
     @Override
@@ -74,16 +69,14 @@ public class WorkTypeService implements IWorkTypeService {
 
     @Override
     public WorkTypeResponseDTO getWorkTypeById(long id) {
-        WorkType workType = workTypeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException(Translator.toLocate("work-type.not-found")));
+        WorkType workType = workTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("work-type.not-found")));
         return convertToWorkTypeResponseDTO(workType);
     }
 
     @Override
     public WorkTypeResponseDTO createWorkType(CreateWorkTypeRequest createWorkTypeRequest) {
-        if (!validateWorkType(createWorkTypeRequest.getWorkTypeCode(), createWorkTypeRequest.getWorkTypeName())) {
-            log.error("WORK_TYPE_SERVICE  -> createWorkType fail");
-            throw new AlreadyExistedException(Translator.toLocate("work-type.exist"));
-        }
+
+        workTypeValidator.validateCreateWorkType(createWorkTypeRequest);
         WorkType workType = new WorkType();
         workType.setWorkTypeCode(createWorkTypeRequest.getWorkTypeCode());
         workType.setWorkTypeName(createWorkTypeRequest.getWorkTypeName());
@@ -97,10 +90,7 @@ public class WorkTypeService implements IWorkTypeService {
     @Override
     public WorkTypeResponseDTO updateWorkType(long id, UpdateWorkTypeRequest updateWorkTypeRequest) {
 
-        if (!validateWorkType(updateWorkTypeRequest.getWorkTypeCode(), updateWorkTypeRequest.getWorkTypeName())) {
-            log.error("WORK_TYPE_SERVICE  -> updateWorkType fail");
-            throw new AlreadyExistedException(Translator.toLocate("work-type.exist"));
-        }
+        workTypeValidator.validateUpdateWorkType(id, updateWorkTypeRequest);
         WorkType workType = workTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("WorkType not found"));
         workType.setWorkTypeCode(updateWorkTypeRequest.getWorkTypeCode());
         workType.setWorkTypeName(updateWorkTypeRequest.getWorkTypeName());
@@ -123,6 +113,13 @@ public class WorkTypeService implements IWorkTypeService {
         WorkType workType = workTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("WorkType not found"));
         workTypeRepository.delete(workType);
 
+    }
+
+    @Override
+    public void deleteListWorkTypes(List<Long> ids) {
+        for (Long id : ids) {
+            deleteWorkTypeById(id);
+        }
     }
 
     @Override

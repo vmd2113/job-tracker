@@ -26,9 +26,15 @@ public class WorkResponseDTO {
 
     private Long workTypeId;
 
+    private String workTypeName;
+
     private Long priorityId;
 
+    private String priorityName;
+
     private Long status;
+
+    private String statusName;
 
     private LocalDateTime startTime;
 

@@ -30,7 +30,6 @@ public class WorkConfigBusiness extends BaseEntity {
     @Column(name = "PRIORITY_ID")
     private Long priorityId;
 
-
     @Column(name = "OLD_STATUS")
     private Long oldStatus;
 

@@ -23,5 +23,7 @@ public interface ItemRepository extends JpaRepository<Item, Long>, JpaSpecificat
 
     List<Item> findByItemCodeContaining(String itemCode);
 
+    Item findByItemIdAndCategory_CategoryId(Long itemId, Long categoryId);
+
 
 }

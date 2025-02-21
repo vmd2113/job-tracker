@@ -19,5 +19,7 @@ public interface IWorkConfigBusinessService {
 
     void deleteWorkConfigById(Long id);
 
+    void deleteListWorkConfig(List<Long> ids);
+
     public PageResponse<WorkConfigResponseDTO> searchWorkConfig(String workTypeName, Long priorityId, Long oldStatus, Long newStatus, int page, int size, String sortBy, String sortDirection);
 }

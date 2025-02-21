@@ -68,6 +68,27 @@ public class ItemController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // get category status work
+    @GetMapping(path = "/category/wo-status")
+    @Operation(summary = "get data of item by category status-wo", description = "Send a request via this API to get data of item by category work-status")
+    public ResponseEntity<ApiResponse<?>> getCategoryWorkStatus() {
+        log.info("ITEM_CONTROLLER -> getCategoryStatus");
+        List<ItemResponseDTO> itemList = itemService.getCategoryCode("WO_STATUS");
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("item.get-category-status.success"), itemList);
+        return ResponseEntity.ok(apiResponse);
+    }
+
+
+    // get category status work
+    @GetMapping(path = "/category/priority")
+    @Operation(summary = "get data of item by category priority-wo", description = "Send a request via this API to get data of item by category priority-wo")
+    public ResponseEntity<ApiResponse<?>> getCategoryStatus() {
+        log.info("ITEM_CONTROLLER -> getCategoryWorkStatus");
+        List<ItemResponseDTO> itemList = itemService.getCategoryCode("WO_PRIORITY");
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("item.get-category-status.success"), itemList);
+        return ResponseEntity.ok(apiResponse);
+    }
+
     @GetMapping(path = "/parent/{parentItemId}")
     @Operation(summary = "get data of item by parent item id", description = "Send a request via this API to get data of item by parent item id")
     public ResponseEntity<ApiResponse<?>> getItemByParentItemId(@PathVariable(name = "parentItemId") Long parentItemId) {

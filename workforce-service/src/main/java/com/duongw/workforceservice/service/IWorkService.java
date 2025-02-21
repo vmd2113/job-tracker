@@ -21,5 +21,7 @@ public interface IWorkService {
     void deleteWorkById(Long id);
 
 
+    void deleteListWorks(List<Long> ids);
+
     PageResponse<WorkResponseDTO> searchWorks(String workCode, String workContent, Long workTypeId, Long priorityId, Long status, String startTime, String endTime, String finishTime, Long assignedUserId, int pageNo, int pageSize, String sortBy, String sortDirection);
 }

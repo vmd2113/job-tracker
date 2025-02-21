@@ -1,6 +1,7 @@
 package com.duongw.commonservice.controller.internal;
 
 import com.duongw.common.constant.ApiPath;
+import com.duongw.commonservice.model.dto.response.item.ItemResponseDTO;
 import com.duongw.commonservice.model.dto.response.role.RoleResponse;
 import com.duongw.commonservice.service.IItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +34,17 @@ public class ItemInternalController {
     public ResponseEntity<List<RoleResponse>> getRoleByUserId(@PathVariable(name = "userId") Long userId) {
         List<RoleResponse> roleList = itemService.getRoleByUserId(userId);
         return ResponseEntity.ok(roleList);
+    }
+
+    @GetMapping(path = "/by-id/{itemId}")
+    public ResponseEntity<ItemResponseDTO> getItemById(@PathVariable(name = "itemId") Long userId) {
+        ItemResponseDTO item = itemService.getItemById(userId);
+        return ResponseEntity.ok(item);
+    }
+
+    @GetMapping(path = "/category/by-id/{itemId}/categoryId/{categoryId}")
+    public ResponseEntity<ItemResponseDTO> getItemByIdAndCategoryId(@PathVariable(name = "itemId") Long itemId, @PathVariable(name = "categoryId") Long categoryId) {
+        ItemResponseDTO item = itemService.getItemByIdAndCategoryId(itemId, categoryId);
+        return ResponseEntity.ok(item);
     }
 }

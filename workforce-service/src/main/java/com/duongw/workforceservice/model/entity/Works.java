@@ -45,11 +45,9 @@ public class Works extends BaseEntity {
     private LocalDateTime startTime;
 
     @Column(name = "END_TIME")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private LocalDateTime endTime;
 
     @Column(name = "FINISH_TIME")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private LocalDateTime finishTime;
 
     @Column(name = "ASSIGN_USER_ID")

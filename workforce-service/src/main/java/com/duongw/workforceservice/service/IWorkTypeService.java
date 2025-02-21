@@ -17,6 +17,9 @@ public interface IWorkTypeService {
     WorkTypeResponseDTO updateWorkType(long id, UpdateWorkTypeRequest updateWorkTypeRequest);
     WorkTypeResponseDTO changeStatusWorkType(long id, String status);
     void deleteWorkTypeById(Long id);
+
+    void deleteListWorkTypes(List<Long> ids);
+
     PageResponse<WorkTypeResponseDTO> searchWorkType(String workTypeCode, String workTypeName, int pageNo, int pageSize, String sortBy, String sortDirection) ;
 
 

@@ -52,6 +52,7 @@ public class DepartmentSearchRepository {
                 .departmentId(department.getDepartmentId())
                 .departmentName(department.getDepartmentName())
                 .departmentCode(department.getDepartmentCode())
+                .departmentParentName(department.getParentDepartment() == null ? null : department.getParentDepartment().getDepartmentName())
                 .departmentParentId(department.getParentDepartment() == null ? null : department.getParentDepartment().getDepartmentId())
                 .status(department.getStatus())
                 .build());

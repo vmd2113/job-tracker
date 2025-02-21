@@ -13,7 +13,6 @@ import com.duongw.commonservice.model.entity.Item;
 import com.duongw.commonservice.repository.CategoryRepository;
 import com.duongw.commonservice.repository.ItemRepository;
 import com.duongw.commonservice.repository.search.ItemSearchRepository;
-import com.duongw.commonservice.service.ICategoryService;
 import com.duongw.commonservice.service.IItemService;
 import com.duongw.commonservice.service.IUserRoleService;
 import lombok.extern.slf4j.Slf4j;
@@ -68,6 +67,14 @@ public class ItemService implements IItemService {
     public List<ItemResponseDTO> getItemByCategoryId(Long categoryId) {
         log.info("ITEM_SERVICE  -> getItemByCategoryId");
         Category category = categoryRepository.findByCategoryId(categoryId).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("category.not.found.id")));
+        List<Item> itemList = itemRepository.findItemByCategory(category);
+        return itemList.stream().map(this::convertToItemResponseDTO).toList();
+    }
+
+    @Override
+    public List<ItemResponseDTO> getCategoryCode(String categoryCode) {
+        log.info("ITEM_SERVICE  -> getCategoryCode");
+        Category category = categoryRepository.findByCategoryCode(categoryCode).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("category.not.found.code")));
         List<Item> itemList = itemRepository.findItemByCategory(category);
         return itemList.stream().map(this::convertToItemResponseDTO).toList();
     }
@@ -206,8 +213,23 @@ public class ItemService implements IItemService {
     }
 
     @Override
+    public ItemResponseDTO getItemByIdAndCategoryId(Long itemId, Long categoryId) {
+        try {
+            log.info("ITEM_SERVICE  -> getItemByIdAndCategoryId");
+            Item item = itemRepository.findByItemIdAndCategory_CategoryId(itemId, categoryId);
+            return convertToItemResponseDTO(item);
+        }catch (Exception e){
+            log.error("ITEM_SERVICE  -> getItemByIdAndCategoryId fail");
+            throw new ResourceNotFoundException(Translator.toLocate("item.not.found.id"));
+        }
+
+    }
+
+    @Override
     public PageResponse<ItemResponseDTO> searchItems(String itemName, String itemCode, String categoryCode, int pageNo, int pageSize, String sortBy, String sortDirection) {
         return itemSearchRepository.searchItems(itemName, itemCode, categoryCode, pageNo, pageSize, sortBy, sortDirection);
     }
+
+
 
 }
