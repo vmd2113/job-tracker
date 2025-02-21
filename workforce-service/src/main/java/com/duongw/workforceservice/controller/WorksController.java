@@ -83,13 +83,12 @@ public class WorksController {
             @RequestParam(name = "status", required = false) Long status,
             @RequestParam(name = "startTime", required = false) String startTime,
             @RequestParam(name = "endTime", required = false) String endTime,
-            @RequestParam(name = "finishTime", required = false) String finishTime,
             @RequestParam(name = "assignedUserId", required = false) Long assignedUserId,
             @RequestParam(name = "page", defaultValue = "1") int pageNo,
             @RequestParam(name = "size", defaultValue = "10") int pageSize,
             @RequestParam(name = "sortBy", required = false, defaultValue = "updateDate") String sortBy,
             @RequestParam(name = "sortDirection", required = false, defaultValue = "asc") String sortDirection) {
-        PageResponse<WorkResponseDTO> workList = workService.searchWorks(workCode, workContent, workTypeId, priorityId, status, startTime, endTime, finishTime, assignedUserId, pageNo, pageSize, sortBy, sortDirection);
+        PageResponse<WorkResponseDTO> workList = workService.searchWorks(workCode, workContent, workTypeId, priorityId, status, startTime, endTime, assignedUserId, pageNo, pageSize, sortBy, sortDirection);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("work.search.success"), workList);
         return ResponseEntity.ok(apiResponse);
     }

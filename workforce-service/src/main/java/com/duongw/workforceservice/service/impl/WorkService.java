@@ -188,8 +188,8 @@ public class WorkService implements IWorkService {
 
 
     @Override
-    public PageResponse<WorkResponseDTO> searchWorks(String workCode, String workContent, Long workTypeId, Long priorityId, Long status, String startTime, String endTime, String finishTime, Long assignedUserId, int pageNo, int pageSize, String sortBy, String sortDirection) {
-        return workSearchRepository.searchWorks(workCode, workContent, workTypeId, priorityId, status, startTime, endTime, finishTime, assignedUserId, pageNo, pageSize, sortBy, sortDirection);
+    public PageResponse<WorkResponseDTO> searchWorks(String workCode, String workContent, Long workTypeId, Long priorityId, Long status, String startTime, String endTime,  Long assignedUserId, int pageNo, int pageSize, String sortBy, String sortDirection) {
+        return workSearchRepository.searchWorks(workCode, workContent, workTypeId, priorityId, status, startTime, endTime, assignedUserId, pageNo, pageSize, sortBy, sortDirection);
     }
 
 

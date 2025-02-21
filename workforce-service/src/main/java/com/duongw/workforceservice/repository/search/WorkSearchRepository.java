@@ -29,7 +29,7 @@ public class WorkSearchRepository {
         this.workTypeService = workTypeService;
     }
 
-    public PageResponse<WorkResponseDTO> searchWorks(String workCode, String workContent, Long workTypeId, Long priorityId, Long status, String startTime, String endTime, String finishTime, Long assignedUserId, int pageNo, int pageSize, String sortBy, String sortDirection) {
+    public PageResponse<WorkResponseDTO> searchWorks(String workCode, String workContent, Long workTypeId, Long priorityId, Long status, String startTime, String endTime, Long assignedUserId, int pageNo, int pageSize, String sortBy, String sortDirection) {
 
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
 
@@ -39,7 +39,7 @@ public class WorkSearchRepository {
 
 
         Page<Works> worksPage = workRepository.findAll(
-                WorksSpecification.searchByMultipleFields(workCode, workContent, workTypeId, priorityId, status, startTime, endTime, finishTime, assignedUserId),
+                WorksSpecification.searchByMultipleFields(workCode, workContent, workTypeId, priorityId, status, startTime, endTime, assignedUserId),
                 pageRequest
         );
 
