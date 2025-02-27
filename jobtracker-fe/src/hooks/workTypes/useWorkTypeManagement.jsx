@@ -1,5 +1,4 @@
 import React, {useCallback, useRef, useState, useEffect} from 'react';
-
 import * as api from "../../api/workTypeApi.js";
 const useWorkTypeManagement = () => {
 
@@ -123,6 +122,8 @@ const useWorkTypeManagement = () => {
     }, []);
 
     const createWorkType = useCallback(async (workTypeData) => {
+        console.log("CREATE WORK TYPE -  WORK TYPE MANAGEMENT ")
+        console.log("CREATE WORK TYPE DATA ", workTypeData);
         try {
             setLoading(true);
             setError(null);
@@ -154,6 +155,8 @@ const useWorkTypeManagement = () => {
 
 
     const updateWorkType = useCallback(async (workTypeId, workTypeData) => {
+        console.log("UPDATE WORK TYPE -  WORK TYPE MANAGEMENT ")
+        console.log("UPDATE WORK TYPE DATA ", workTypeData);
         try {
             setLoading(true);
             setError(null);

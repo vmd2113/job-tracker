@@ -151,7 +151,10 @@ Input.propTypes = {
     type: PropTypes.oneOf(['text', 'password', 'email', 'number', 'tel', 'date', 'time', 'textarea']),
     label: PropTypes.string,
     name: PropTypes.string.isRequired,
-    value: PropTypes.string,
+    value: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]),
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
     placeholder: PropTypes.string,

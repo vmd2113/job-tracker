@@ -105,7 +105,7 @@ const WorkForm = React.forwardRef(({initialData, onSubmit, type}, ref) => {
 
 
 
-    console.log("DATA FORM - WORK", formData);
+
     React.useImperativeHandle(ref, () => ({
         submit: () => {
             trigger().then(isValid => {

@@ -2,8 +2,14 @@ import React from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import FormInput from "../common/input/FormInput.jsx";
 
-
 const WorkTypeForm = React.forwardRef(({initialData, onSubmit, type}, ref) => {
+    // Đảm bảo initialData.processTime là số hoặc undefined
+    const processTimeInitial = initialData?.processTime !== null &&
+    initialData?.processTime !== undefined &&
+    !isNaN(parseFloat(initialData.processTime))
+        ? parseFloat(initialData.processTime)
+        : undefined;
+
     const {
         control,
         handleSubmit,
@@ -13,7 +19,7 @@ const WorkTypeForm = React.forwardRef(({initialData, onSubmit, type}, ref) => {
         defaultValues: {
             workTypeName: initialData?.workTypeName || '',
             workTypeCode: initialData?.workTypeCode || '',
-            processTime: initialData?.processTime || '',
+            processTime: processTimeInitial,
             status: type === 'add' ? 1 : (initialData?.status ?? 1),
         },
         mode: 'onTouched'
@@ -26,14 +32,30 @@ const WorkTypeForm = React.forwardRef(({initialData, onSubmit, type}, ref) => {
 
     // Validate process time format
     const validateProcessTime = (value) => {
-        // Check if it's a valid number
-        if (isNaN(value)) return "Thời gian xử lý phải là số";
+        // Kiểm tra nếu giá trị không tồn tại
+        if (value === undefined || value === null) {
+            return "Thời gian xử lý là bắt buộc";
+        }
 
+        // Đảm bảo đây là một số
+        if (typeof value !== 'number' || isNaN(value)) {
+            return "Thời gian xử lý phải là số";
+        }
+
+        // Kiểm tra giá trị phải lớn hơn 0 (phù hợp với backend validator)
+        if (value <= 0) {
+            return "Thời gian xử lý phải lớn hơn 0";
+        }
+
+        // Kiểm tra giá trị không được lớn hơn 720 (phù hợp với backend validator)
+        if (value > 720) {
+            return "Thời gian xử lý không được vượt quá 720 giờ";
+        }
         const parts = value.toString().split('.');
         const integerPart = parts[0];
         const decimalPart = parts[1] || '';
 
-        // Check length constraints
+        // Kiểm tra độ dài phần nguyên và phần thập phân
         if (integerPart.length > 10) {
             return "Phần nguyên không được vượt quá 10 chữ số";
         }
@@ -104,6 +126,8 @@ const WorkTypeForm = React.forwardRef(({initialData, onSubmit, type}, ref) => {
                     }}
                     type="number"
                     step="0.01"
+                    min="0.01" // Thêm min để đảm bảo giá trị > 0
+                    max="720" // Thêm max để phù hợp với validate backend
                 />
 
                 <div className="space-y-2">

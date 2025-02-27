@@ -24,16 +24,33 @@ const getWorkTypeById = async (workTypeId) => {
 
 // Create work type
 const createWorkType = async (workTypeData) => {
-    try{
+
+    try {
+        // Đảm bảo processTime là số float
+        const processTime = workTypeData.processTime !== null &&
+        workTypeData.processTime !== undefined ?
+            parseFloat(workTypeData.processTime) : null;
+
+        // Nếu processTime là null hoặc NaN, báo lỗi luôn
+        if (processTime === null || isNaN(processTime)) {
+            throw new Error("Thời gian xử lý không hợp lệ");
+        }
+
+        console.log("processTime", processTime);
+
+
         const body = {
             workTypeName: workTypeData.workTypeName,
             workTypeCode: workTypeData.workTypeCode,
-
-            status: workTypeData.status
+            processTime: processTime,
+            status: workTypeData.status,
+            priorityId: workTypeData.priorityId || null
         }
+
+        console.log("BODY", body);
         const response = await axiosInstance.post(`${WORK_TYPE_API}/`, body);
         return response.data;
-    }catch (error) {
+    } catch (error) {
         console.log("ERROR AT CREATE WORK TYPE", error);
         throw error;
     }
@@ -41,19 +58,35 @@ const createWorkType = async (workTypeData) => {
 
 const updateWorkType = async (workTypeId, workTypeData) => {
     try {
+
+        const processTime = workTypeData.processTime !== null &&
+        workTypeData.processTime !== undefined ?
+            parseFloat(workTypeData.processTime) : null;
+
+        // Nếu processTime là null hoặc NaN, báo lỗi luôn
+        if (processTime === null || isNaN(processTime)) {
+            throw new Error("Thời gian xử lý không hợp lệ");
+        }
+        console.log("processTime", processTime);
+
         const body = {
             workTypeName: workTypeData.workTypeName,
             workTypeCode: workTypeData.workTypeCode,
-
-            status: workTypeData.status
+            processTime: processTime,
+            status: workTypeData.status,
+            priorityId: workTypeData.priorityId || null
         }
+
+        console.log("BODY", body);
         const response = await axiosInstance.put(`${WORK_TYPE_API}/${workTypeId}`, body);
+        console.log("RESPONSE AT UPDATE WORK TYPE", response);
         return response.data;
-    }catch (error) {
+    } catch (error) {
         console.log("ERROR AT UPDATE WORK TYPE", error);
         throw error;
     }
 }
+
 
 //search work type
 const searchWorkTypes = async ({
