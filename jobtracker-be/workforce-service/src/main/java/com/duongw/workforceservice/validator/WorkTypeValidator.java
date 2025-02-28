@@ -59,9 +59,9 @@ public class WorkTypeValidator {
         if (processTime == null) {
             throw new InvalidDataException("Thời gian xử lý không được để trống");
         }
-        if (priorityId == null) {
-            throw new InvalidDataException("Mức độ ưu tiên không được để trống");
-        }
+//        if (priorityId == null) {
+//            throw new InvalidDataException("Mức độ ưu tiên không được để trống");
+//        }
     }
 
     private void validateDuplicateWorkType(Long currentWorkTypeId, String workTypeCode, String workTypeName) {

@@ -8,6 +8,7 @@ import com.duongw.commonservice.model.dto.request.department.CreateDepartmentReq
 import com.duongw.commonservice.model.dto.request.department.UpdateDepartmentRequest;
 import com.duongw.commonservice.model.dto.response.department.DepartmentResponseDTO;
 import com.duongw.commonservice.model.dto.response.department.DepartmentTreeResponseDTO;
+import com.duongw.commonservice.model.entity.Department;
 import com.duongw.commonservice.service.IDepartmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -82,6 +83,7 @@ public class DepartmentController {
         return ResponseEntity.ok(apiResponse);
     }
 
+
     @GetMapping(path = "/hierarchy")
     @Operation(summary = "get department hierarchy", description = "Send a request via this API to get department hierarchy")
     public ResponseEntity<ApiResponse<?>> getDepartmentHierarchy() {
@@ -91,6 +93,14 @@ public class DepartmentController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @GetMapping(path = "/hierarchy/parent/{id}")
+    @Operation(summary = "get direct children of a department", description = "Send a request via this API to get direct children of a department")
+    public ResponseEntity<ApiResponse<?>> getListChildDepartmentByParentId(@PathVariable(name = "id") Long id) {
+        log.info("DEPARTMENT_CONTROLLER -> getListChildDepartmentByParentId for parent ID: {}", id);
+        List<DepartmentTreeResponseDTO> departmentTreeResponseDTOList = departmentService.getListChildDepartmentByParentId(id);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("department.get-hierarchy.success"), departmentTreeResponseDTOList);
+        return ResponseEntity.ok(apiResponse);
+    }
 
     @PostMapping(path = "/")
     @Operation(summary = "create and add a department ", description = "Send a request via this API to create a new department")

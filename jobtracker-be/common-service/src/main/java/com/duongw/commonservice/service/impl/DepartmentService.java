@@ -86,7 +86,7 @@ public class DepartmentService implements IDepartmentService {
         if (department.getDepartmentParentId() == null) {
             newDepartment.setParentDepartment(null);
 
-        }else{
+        } else {
             Department parentDepartment = departmentRepository.findById(department.getDepartmentParentId()).orElseThrow(() -> new ResourceNotFoundException(Translator.toLocate("department.not.found")));
             newDepartment.setParentDepartment(parentDepartment);
 
@@ -136,6 +136,8 @@ public class DepartmentService implements IDepartmentService {
         return departmentSearchRepository.searchDepartments(departmentName, departmentCode, pageNo, pageSize, sortBy, sortDirection);
     }
 
+
+    // using connect by query
     @Override
     public List<DepartmentTreeResponseDTO> getDepartmentHierarchy() {
         List<DepartmentProjection> departments = departmentRepository.findDepartmentHierarchy();
@@ -169,6 +171,34 @@ public class DepartmentService implements IDepartmentService {
 
         return rootDepartments;
     }
+
+    @Override
+    public List<DepartmentTreeResponseDTO> getListChildDepartmentByParentId(Long departmentId) {
+        List<DepartmentProjection> children = departmentRepository.findDepartmentTreeByIdConnectBy(departmentId);
+        // Vì truy vấn CONNECT BY trả về node gốc và các cấp con,
+        // ta lọc lấy những bản ghi có depth = 2 (con trực tiếp)
+        List<DepartmentProjection> directChildren = new ArrayList<>();
+        for (DepartmentProjection proj : children) {
+            if (proj.getDepth() != null && proj.getDepth() == 2) {
+                directChildren.add(proj);
+            }
+        }
+        return convertToTreeDTOList(directChildren);
+
+    }
+
+    private List<DepartmentTreeResponseDTO> convertToTreeDTOList(List<DepartmentProjection> projections) {
+        List<DepartmentTreeResponseDTO> list = new ArrayList<>();
+        for (DepartmentProjection proj : projections) {
+            list.add(convertToDTO(proj));
+        }
+        return list;
+    }
+
+
+
+
+
 
     private DepartmentTreeResponseDTO convertToDTO(DepartmentProjection dept) {
         DepartmentTreeResponseDTO dto = new DepartmentTreeResponseDTO();

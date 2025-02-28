@@ -5,10 +5,12 @@ import com.duongw.commonservice.model.dto.request.department.CreateDepartmentReq
 import com.duongw.commonservice.model.dto.request.department.UpdateDepartmentRequest;
 import com.duongw.commonservice.model.dto.response.department.DepartmentResponseDTO;
 import com.duongw.commonservice.model.dto.response.department.DepartmentTreeResponseDTO;
+import com.duongw.commonservice.model.entity.Department;
 
 import java.util.List;
 
 public interface IDepartmentService {
+
     List<DepartmentResponseDTO> getAllDepartment();
 
     DepartmentResponseDTO getDepartmentById(Long id);
@@ -17,15 +19,19 @@ public interface IDepartmentService {
 
     DepartmentResponseDTO getDepartmentByCode(String code);
 
-
     DepartmentResponseDTO createDepartment(CreateDepartmentRequest department);
 
     DepartmentResponseDTO updateDepartment(Long id, UpdateDepartmentRequest department);
 
     DepartmentResponseDTO updateDepartmentStatus(Long id, String status);
+
     void deleteDepartment(Long id);
 
     PageResponse<DepartmentResponseDTO> searchDepartments(String departmentName, String departmentCode, int pageNo, int pageSize, String sortBy, String sortDirection);
 
     List<DepartmentTreeResponseDTO> getDepartmentHierarchy();
+
+    List<DepartmentTreeResponseDTO> getListChildDepartmentByParentId(Long departmentId);
+
+
 }
