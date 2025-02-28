@@ -2,6 +2,7 @@ package com.duongw.workforceservice.model.dto.resquest.works;
 
 import com.duongw.workforceservice.model.entity.WorkHistory;
 import com.duongw.workforceservice.model.entity.WorkType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,8 +28,11 @@ public class CreateWorkRequest {
 
     private Long status;
 
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startTime;
 
+
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endTime;
 
     private Long assignedUserId;

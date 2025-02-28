@@ -76,7 +76,6 @@ public class WorkService implements IWorkService {
         ItemResponseDTO status = findItemByIdAndCategoryId(works.getStatus(), CATEGORY_STATUS);
 
 
-
         return WorkResponseDTO.builder()
                 .worksId(works.getWorksId())
                 .workCode(works.getWorkCode())
@@ -179,8 +178,8 @@ public class WorkService implements IWorkService {
     }
 
     @Override
-    public void deleteListWorks(List<Long> ids){
-        for(Long id: ids){
+    public void deleteListWorks(List<Long> ids) {
+        for (Long id : ids) {
             deleteWorkById(id);
 
         }
@@ -188,10 +187,9 @@ public class WorkService implements IWorkService {
 
 
     @Override
-    public PageResponse<WorkResponseDTO> searchWorks(String workCode, String workContent, Long workTypeId, Long priorityId, Long status, String startTime, String endTime,  Long assignedUserId, int pageNo, int pageSize, String sortBy, String sortDirection) {
+    public PageResponse<WorkResponseDTO> searchWorks(String workCode, String workContent, Long workTypeId, Long priorityId, Long status, String startTime, String endTime, Long assignedUserId, int pageNo, int pageSize, String sortBy, String sortDirection) {
         return workSearchRepository.searchWorks(workCode, workContent, workTypeId, priorityId, status, startTime, endTime, assignedUserId, pageNo, pageSize, sortBy, sortDirection);
     }
-
 
 
     private String generateWorkCode(Long workTypeId) {
@@ -216,8 +214,6 @@ public class WorkService implements IWorkService {
             throw new ResourceNotFoundException("Không tìm thấy dữ liệu");
         }
     }
-
-
 
 
 }

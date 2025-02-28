@@ -31,7 +31,7 @@ public class WorksValidator {
     }
 
     public void validateUpdateWork(UpdateWorkRequest request) {
-        validateStartTime(request.getStartTime());
+        validateUpdateStartTime(request.getStartTime());
         validateEndTime(request.getStartTime(), request.getEndTime());
 
         if (request.getFinishTime() != null) {
@@ -47,6 +47,12 @@ public class WorksValidator {
         LocalDateTime now = LocalDateTime.now();
         if (startTime.isBefore(now)) {
             throw new InvalidDataException("Thời gian bắt đầu phải lớn hơn thời gian hiện tại");
+        }
+    }
+
+    private void validateUpdateStartTime(LocalDateTime startTime) {
+        if (startTime == null) {
+            throw new InvalidDataException("Thời gian bắt đầu không được để trống");
         }
     }
 
