@@ -54,6 +54,7 @@ export const AuthProvider = ({children}) => {
     const register = async (userData) => {
         try {
             const response = await api.register(userData);
+            console.log("REGISTER - RESPONSE AT AUTH", response);
             return {success: true, data: response.data};
         } catch (error) {
             return {

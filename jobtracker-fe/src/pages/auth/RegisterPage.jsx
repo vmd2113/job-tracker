@@ -4,17 +4,50 @@ import {useForm} from "react-hook-form";
 import {useNavigate} from "react-router-dom";
 import FormInput from "../../components/common/input/FormInput.jsx";
 import Button from "../../components/common/button/Button.jsx";
+import {useAuth} from "../../context/auth/AuthContext.jsx";
 
 const RegisterPage = () => {
     const {control, handleSubmit} = useForm();
 
     const navigate = useNavigate();
+    const {register} = useAuth();
     const [error, setError] = useState('');
 
 
-    const onSubmit = () => {
+    const onSubmit = async (data) => {
         console.log("Submit button clicked");
-    }
+        const result = await register(data);
+        console.log("RESULT REGISTER: ", result);
+
+        if (result.success) {
+            // Lấy roles từ response
+            let roles = result.response?.data?.roles;
+            console.log("ROLES IN LOGIN: ", roles);
+
+            // Kiểm tra nếu roles là undefined, null hoặc không phải array
+            if (!roles || !Array.isArray(roles)) {
+                roles = []; // Gán một mảng rỗng nếu roles không hợp lệ
+            }
+
+            // Bây giờ an toàn để sử dụng .map()
+            let listRoles = roles.map(role => role.roleCode);
+            console.log("LIST ROLES IN LOGIN: ", listRoles);
+
+            // Kiểm tra quyền và điều hướng
+            if (listRoles.length > 0 && (listRoles.includes("ROLES_ADMIN") || listRoles.includes("ROLES_MANAGER"))) {
+                return navigate("/admin/dashboard");
+            }
+
+            if (listRoles.length > 0 && listRoles.includes("ROLES_STAFF")) {
+                return navigate("/clients/home");
+            } else {
+                //TODO unauthorized
+                return navigate("/login");
+            }
+        } else {
+            setError(result.error);
+        }
+    };
 
 
     return (

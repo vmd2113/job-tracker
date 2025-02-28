@@ -1,4 +1,4 @@
-import axiosInstance from "./axiosConfig.js";
+        import axiosInstance from "./axiosConfig.js";
 
 const login = (username, password) => {
     const inputData = {
@@ -10,12 +10,13 @@ const login = (username, password) => {
 };
 
 const register = (userData) => {
+    console.log("USER DATA AT REGISTER", userData);
     const inputData = {
         username: userData.username,
+        phoneNumber: userData.phoneNumber,
         email: userData.email,
         password: userData.password,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
+        confirmPassword: userData.confirmPassword,
 
     }
     return axiosInstance.post('/auth/register', inputData);
