@@ -25,7 +25,6 @@ const FormInput = ({
         const val = e.target.value;
 
         // Nếu input rỗng, set giá trị về undefined để React Hook Form hiểu là không có giá trị
-        // Điều này sẽ kích hoạt validation required nếu cần
         if (val === '') {
             onChange(undefined);
             return;
@@ -39,11 +38,41 @@ const FormInput = ({
     };
 
     // Xử lý hiển thị giá trị trong input
-    // Đảm bảo rằng null/undefined sẽ hiển thị là chuỗi rỗng trong input
-    const displayValue = (value === null || value === undefined) ? '' : value;
+    const processDisplayValue = (val) => {
+        // Xử lý null/undefined
+        if (val === null || val === undefined) {
+            return '';
+        }
+
+        // Xử lý trường hợp là object
+        if (typeof val === 'object') {
+            console.warn('FormInput received object value for field:', name, val);
+            return '';
+        }
+
+        // Trả về giá trị nguyên bản cho các trường hợp còn lại
+        return val;
+    };
+
+    // Áp dụng xử lý giá trị
+    const displayValue = processDisplayValue(value);
 
     // Xác định xem có phải là input loại số hay không
     const isNumberInput = type === 'number';
+
+    // Xử lý onChange tùy theo loại input
+    const handleChange = (e) => {
+        if (isNumberInput) {
+            handleNumberChange(e);
+        } else {
+            // Đảm bảo chúng ta đang truyền giá trị đúng
+            if (e && e.target) {
+                onChange(e.target.value);
+            } else {
+                onChange(e);
+            }
+        }
+    };
 
     return (
         <Input
@@ -52,7 +81,7 @@ const FormInput = ({
             name={name}
             className={clsName}
             value={displayValue}
-            onChange={isNumberInput ? handleNumberChange : onChange}
+            onChange={handleChange}
             onBlur={onBlur}
             label={label}
             error={error?.message}

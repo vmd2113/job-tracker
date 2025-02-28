@@ -9,7 +9,7 @@ const WorkList = ({works, selectedIds, onSelectAll, onSelectOne, onEdit, onDelet
     const isAllSelected = works.length > 0 && works.every(work => selectedIds.has(work.worksId));
     const isIndeterminate = works.length > 0 &&
         works.some(work => selectedIds.has(work.worksId)) &&
-        !works.every(work => !selectedIds.has(work.worksId));
+        !works.every(work => selectedIds.has(work.worksId));
 
     return (
         <div className="w-full">

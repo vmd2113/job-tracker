@@ -13,6 +13,7 @@ const useWorkManagement = () => {
 
     const [keySearch, setKeySearch] = useState({
         workCode: '',
+        workContent: '',
         workTypeId: '',
         priorityId: '',
         startTime: '',
@@ -22,15 +23,14 @@ const useWorkManagement = () => {
         sortDirection: 'desc'
     });
 
-    const searchTimeout = useRef(null)
+    const searchTimeout = useRef(null);
 
     const getErrorMessage = (error) => {
-        console.log("ERROR - GET ERROR MESSAGE", error);
-        if (error.response?.data) {
+        if (error.response?.data?.message) {
             return error.response.data.message;
         }
-        return error.response.data.message || 'Có lỗi xảy ra. Vui lòng thử lại.';
-    }
+        return 'Có lỗi xảy ra. Vui lòng thử lại.';
+    };
 
     // Fetch works with search criteria and pagination
     const fetchWorks = useCallback(async () => {
@@ -39,20 +39,16 @@ const useWorkManagement = () => {
             setError(null);
 
             const response = await api.searchWorks({
-
                 page: pagination.currentPage,
                 size: pagination.pageSize,
                 ...keySearch
             });
-            console.log("pagination.currentPage at useWorkManagement.jsx", pagination.currentPage);
-            console.log("response at useWorkManagement.jsx", response);
-
 
             const items = response?.data?.items;
             const total = response?.data?.total;
 
             const serverPageNo = response?.data?.pageNo;
-            console.log("Page no: ", serverPageNo);
+
             if (items) {
                 setWorks(items);
                 setTotalItems(total);
@@ -61,11 +57,9 @@ const useWorkManagement = () => {
                     setPagination(prev => ({...prev, currentPage: serverPageNo}));
                 }
             }
-
-
         } catch (error) {
             const errorMsg = getErrorMessage(error);
-            console.log("ERROR FETCH SEARCH WORK: ", errorMsg)
+            console.error("ERROR FETCH SEARCH WORK: ", errorMsg);
             setError(errorMsg);
             throw new Error(errorMsg);
         } finally {
@@ -82,7 +76,6 @@ const useWorkManagement = () => {
     }, []);
 
     const handlePageChange = useCallback((newPage) => {
-        // newPage is already 1-based from the Pagination component
         setPagination(prev => ({...prev, currentPage: newPage}));
     }, []);
 
@@ -97,13 +90,14 @@ const useWorkManagement = () => {
     const resetFilters = useCallback(() => {
         setKeySearch({
             workCode: '',
+            workContent: '',
             workTypeId: '',
             priorityId: '',
             startTime: '',
             endTime: '',
             assignedUserId: '',
             sortBy: 'updateDate',
-            sortDirection: 'asc'
+            sortDirection: 'desc'
         });
         setPagination(prev => ({
             ...prev,
@@ -111,29 +105,36 @@ const useWorkManagement = () => {
         }));
     }, []);
 
+    // Format date for API request if needed
+    const formatDate = (dateObj) => {
+        if (!dateObj) return '';
+        // If it's already a string in ISO format, return it
+        if (typeof dateObj === 'string') return dateObj;
+        // Otherwise convert to ISO string
+        return dateObj.toISOString();
+    };
+
     const createWork = useCallback(async (workData) => {
         try {
             setLoading(true);
             setError(null);
 
-            const response = await api.createWork(workData);
-            console.log("RESPONSE CREATE WORK AT WORK MANAGEMENT", response);
+            // Ensure dates are properly formatted
+            const formattedWorkData = {
+                ...workData,
+                startTime: formatDate(workData.startTime),
+                endTime: formatDate(workData.endTime)
+            };
 
-            if (response?.data) {
-                console.log("DATA AFTER CREATE WORK AT WORK MANAGEMENT", response.data);
-                await fetchWorks();
-                return response.data;
-            }
+            const response = await api.createWork(formattedWorkData);
 
-            // If we have a response but no data property, return the response itself
             if (response) {
                 await fetchWorks(); // Refresh list after creation
                 return response;
             }
-
         } catch (error) {
             const errorMsg = getErrorMessage(error);
-            console.log("ERROR FETCH SEARCH WORK: ", errorMsg)
+            console.error("ERROR CREATING WORK: ", errorMsg);
             setError(errorMsg);
             throw new Error(errorMsg);
         } finally {
@@ -141,18 +142,24 @@ const useWorkManagement = () => {
         }
     }, [fetchWorks]);
 
-
     const updateWork = useCallback(async (workId, workData) => {
         try {
             setLoading(true);
             setError(null);
-            const response = await api.updateWork(workId, workData);
-            console.log("RESPONSE AFTER UPDATE WORK AT WORK MANAGEMENT", response);
+
+            // Ensure dates are properly formatted
+            const formattedWorkData = {
+                ...workData,
+                startTime: formatDate(workData.startTime),
+                endTime: formatDate(workData.endTime)
+            };
+
+            const response = await api.updateWork(workId, formattedWorkData);
             await fetchWorks(); // Refresh list after update
             return response;
         } catch (error) {
             const errorMsg = getErrorMessage(error);
-            console.log("ERROR FETCH SEARCH WORK: ", errorMsg)
+            console.error("ERROR UPDATING WORK: ", errorMsg);
             setError(errorMsg);
             throw new Error(errorMsg);
         } finally {
@@ -169,7 +176,7 @@ const useWorkManagement = () => {
             return response;
         } catch (error) {
             const errorMsg = getErrorMessage(error);
-            console.log("ERROR FETCH SEARCH WORK: ", errorMsg)
+            console.error("ERROR DELETING WORK: ", errorMsg);
             setError(errorMsg);
             throw new Error(errorMsg);
         } finally {
@@ -181,13 +188,12 @@ const useWorkManagement = () => {
         try {
             setLoading(true);
             setError(null);
-            console.log("DELETE LIST WORKS -  WORK MANAGEMENT ", workIds)
             const response = await api.deleteListWorks(workIds);
             await fetchWorks(); // Refresh list after deletion
             return response;
         } catch (error) {
             const errorMsg = getErrorMessage(error);
-            console.log("ERROR FETCH SEARCH WORK: ", errorMsg)
+            console.error("ERROR DELETING WORKS: ", errorMsg);
             setError(errorMsg);
             throw new Error(errorMsg);
         } finally {
@@ -222,8 +228,7 @@ const useWorkManagement = () => {
         updateWork,
         deleteWork,
         deleteListWorks
-
-
-    }
+    };
 };
+
 export default useWorkManagement;

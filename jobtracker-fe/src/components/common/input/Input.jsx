@@ -2,8 +2,6 @@ import React from 'react';
 import {AlertCircle, Eye, EyeOff} from 'lucide-react';
 import PropTypes from 'prop-types';
 
-
-
 const SIZE_STYLES = {
     sm: 'px-2 py-1 text-sm',
     md: 'px-3 py-2',
@@ -38,6 +36,23 @@ const Input = ({
     const [showPassword, setShowPassword] = React.useState(false);
     const inputType = type === 'password' && showPassword ? 'text' : type;
     const isTextarea = type === 'textarea';
+
+
+    const processValue = (val) => {
+
+        if (val === null || val === undefined) {
+            return '';
+        }
+        if (typeof val === 'object') {
+            console.warn('Input component received object value:', val);
+            return '';
+        }
+        return val;
+    };
+
+    // Áp dụng xử lý giá trị
+    const displayValue = processValue(value);
+
     const INPUT_TYPES = {
         text: {type: 'text'},
         password: {type: 'password'},
@@ -48,6 +63,7 @@ const Input = ({
         time: {type: 'time'},
         textarea: {type: 'textarea'}
     };
+
     const baseInputStyles = `
     w-full
     rounded-md
@@ -69,6 +85,13 @@ const Input = ({
         if (type === 'password') return 'new-password';
         if (type === 'email') return 'off';
         return 'no-auto'; // Custom value to prevent autofill
+    };
+
+    // Xử lý sự kiện onChange để đảm bảo luôn nhận được giá trị đúng
+    const handleChange = (e) => {
+        if (onChange) {
+            onChange(e);
+        }
     };
 
     return (
@@ -98,8 +121,8 @@ const Input = ({
                     id={name}
                     name={name}
                     type={inputType}
-                    value={value}
-                    onChange={onChange}
+                    value={displayValue}
+                    onChange={handleChange}
                     onBlur={onBlur}
                     placeholder={placeholder}
                     disabled={disabled}
@@ -153,7 +176,8 @@ Input.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([
         PropTypes.string,
-        PropTypes.number
+        PropTypes.number,
+        PropTypes.object  // Thêm object vào prop types để tránh warning
     ]),
     onChange: PropTypes.func,
     onBlur: PropTypes.func,

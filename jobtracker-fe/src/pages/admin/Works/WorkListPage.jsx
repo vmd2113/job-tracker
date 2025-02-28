@@ -32,7 +32,7 @@ const WorkListPage = () => {
     const [modalState, setModalState] = useState({
         isOpen: false,
         type: null,
-        selectedWork: null
+        selectedWorks: null
     });
 
     // Thêm state để theo dõi việc đã thực hiện search hay chưa
@@ -89,11 +89,11 @@ const WorkListPage = () => {
     };
 
     const handleModalOpen = (type, work = null) => {
-        setModalState({isOpen: true, type, selectedWork: work});
+        setModalState({isOpen: true, type, selectedWorks: work});
     };
 
     const handleModalClose = () => {
-        setModalState({isOpen: false, type: null, selectedWork: null});
+        setModalState({isOpen: false, type: null, selectedWorks: null});
     };
 
     const handleModalConfirm = async (data) => {
@@ -105,13 +105,13 @@ const WorkListPage = () => {
                     break;
 
                 case 'edit':
-                    await updateWork(modalState.selectedWork.worksId, data);
+                    await updateWork(modalState.selectedWorks.worksId, data);
                     showToast('Cập nhật công việc thành công', 'success');
                     break;
 
                 case 'delete':
-                    const idsToDelete = modalState.selectedWork
-                        ? [modalState.selectedWork.worksId]  // Trường hợp xóa 1 work
+                    const idsToDelete = modalState.selectedWorks
+                        ? [modalState.selectedWorks.worksId]  // Trường hợp xóa 1 work
                         : Array.from(selectedIds);          // Trường hợp xóa nhiều work
 
                     console.log("IDS TO DELETE AT WORK LIST PAGE", idsToDelete);

@@ -9,7 +9,6 @@ import DateTimePicker from "../common/datepicker/DateTimePicker.jsx";
 
 const WorkSearch = ({handleSearch, keySearch, loading}) => {
     const searchTimeout = useRef(null);
-    const [works, setWorks] = useState([]);
     const [workTypes, setWorkTypes] = useState([]);
     const [statuses, setStatuses] = useState([]);
     const [priorities, setPriorities] = useState([]);
@@ -18,8 +17,8 @@ const WorkSearch = ({handleSearch, keySearch, loading}) => {
     const DEPARTMENT_ID_CURRENT = 6;
 
     const [formData, setFormData] = useState({
-        workCode: ' ',
-        workContent: ' ',
+        workCode: '',
+        workContent: '',
         workTypeId: '',
         priorityId: '',
         status: '',
@@ -28,7 +27,6 @@ const WorkSearch = ({handleSearch, keySearch, loading}) => {
         assignedUserId: '',
         sortBy: 'updateDate',
         sortDirection: 'desc'
-
     });
 
     const {getItemByCategoryPriority, getItemByCategoryStatus} = useItemManagement();
@@ -149,9 +147,18 @@ const WorkSearch = ({handleSearch, keySearch, loading}) => {
 
 
     useEffect(() => {
+
+        const ensureString = (value) => {
+            if (value === null || value === undefined) return '';
+            if (typeof value === 'object') {
+                console.warn('Warning: Object detected in keySearch', value);
+                return '';
+            }
+            return String(value);
+        };
         setFormData({
-            workCode: keySearch.workCode || "",
-            workContent: keySearch.workContent || "",
+            workCode: ensureString(keySearch.workCode),
+            workContent: ensureString(keySearch.workContent),
             workTypeId: keySearch.workTypeId || "",
             priorityId: keySearch.priorityId || "",
             status: keySearch.status || "",
@@ -161,12 +168,16 @@ const WorkSearch = ({handleSearch, keySearch, loading}) => {
             sortBy: keySearch.sortBy || 'updateDate',
             sortDirection: keySearch.sortDirection || 'desc'
         })
+
+        console.log("FORM DATA SEARCH: ", formData)
+        console.log("KEY SEARCH SEARCH: ", keySearch)
     }, [keySearch]);
 
-    const handleWorkChange = (value) => {
+    const handleWorkTypeChange = (value) => {
         setFormData(prev => ({
             ...prev,
             workTypeId: value
+
         }));
     }
 
@@ -184,19 +195,40 @@ const WorkSearch = ({handleSearch, keySearch, loading}) => {
         }));
     }
 
-    const handleWorkCodeChange = (value) => {
-        setFormData(prev => ({
-            ...prev,
-            workCode: value
-        }));
-    }
+    const handleWorkCodeChange = (e) => {
+        // Lưu ý: Input truyền giá trị thông qua e.target.value
+        const value = typeof e === 'object' && e.target ? e.target.value : e;
 
-    const handleWorkContentChange = (value) => {
+        // Đảm bảo giá trị là chuỗi
+        const stringValue = value === null || value === undefined ? '' : String(value);
+
         setFormData(prev => ({
             ...prev,
-            workContent: value
+            workCode: stringValue
         }));
-    }
+
+        // Log để debug
+        console.log("handleWorkCodeChange received:", e);
+        console.log("Setting workCode to:", stringValue);
+    };
+
+    // Xử lý thay đổi nội dung công việc - ĐÃ SỬA
+    const handleWorkContentChange = (e) => {
+        // Lưu ý: Input truyền giá trị thông qua e.target.value
+        const value = typeof e === 'object' && e.target ? e.target.value : e;
+
+        // Đảm bảo giá trị là chuỗi
+        const stringValue = value === null || value === undefined ? '' : String(value);
+
+        setFormData(prev => ({
+            ...prev,
+            workContent: stringValue
+        }));
+
+        // Log để debug
+        console.log("handleWorkContentChange received:", e);
+        console.log("Setting workContent to:", stringValue);
+    };
 
     const handleStartDateChange = (date) => {
         setFormData(prev => ({
@@ -226,8 +258,8 @@ const WorkSearch = ({handleSearch, keySearch, loading}) => {
         }
 
         const resetData = {
-            workCode: ' ',
-            workContent: ' ',
+            workCode: '',
+            workContent: '',
             workTypeId: '',
             priorityId: '',
             status: '',
@@ -293,7 +325,7 @@ const WorkSearch = ({handleSearch, keySearch, loading}) => {
                         <InputSelection
                             options={listWorkTypes}
                             value={formData.workTypeId}
-                            onChange={handleWorkChange}
+                            onChange={handleWorkTypeChange}
                             placeholder="tên loại công việc"
                             disabled={loading}
                             className="w-full"

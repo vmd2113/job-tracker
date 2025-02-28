@@ -43,7 +43,7 @@ const WorkModal = ({
             >
                 <p className="text-sm sm:text-base text-gray-700 break-words">
                     {isMultiDelete
-                        ? `Bạn có chắc chắn muốn xóa ${selectedIds.size} cấu hình làm việc đã chọn?`
+                        ? `Bạn có chắc chắn muốn xóa ${selectedIds.size} công việc đã chọn?`
                         : `Bạn có chắc chắn muốn xóa cấu hình làm việc ${selectedWorks.workId} này?`
                     }
                 </p>
@@ -56,7 +56,7 @@ const WorkModal = ({
             isOpen={isOpen}
             onClose={onClose}
             size="full"
-            title={type === 'add' ? 'Thêm cấu hình làm việc' : 'Sửa cấu hình làm việc'}
+            title={type === 'add' ? 'Thêm việc làm' : 'Sửa việc làm'}
             contentClassName="px-4 sm:px-6 lg:px-8 py-4 sm:py-6"
             overlayClassName="bg-gray-500/75 backdrop-blur-sm"
             modalClassName="w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-6xl mx-auto"
