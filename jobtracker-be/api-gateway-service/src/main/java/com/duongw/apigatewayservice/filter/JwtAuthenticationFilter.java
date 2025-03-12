@@ -1,6 +1,8 @@
 package com.duongw.apigatewayservice.filter;
 
+import com.duongw.apigatewayservice.client.CommonClientGateway;
 import com.duongw.apigatewayservice.config.PublicRoutes;
+import com.duongw.apigatewayservice.model.dto.reponse.ConfigViewResponseGatewayDTO;
 import com.duongw.apigatewayservice.token.JwtService;
 import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
@@ -24,10 +26,12 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 
     private final JwtService jwtService;
     private final PublicRoutes publicRoutes;
+    private final CommonClientGateway commonClientGateway;
 
-    public JwtAuthenticationFilter(JwtService jwtService, PublicRoutes publicRoutes) {
+    public JwtAuthenticationFilter(JwtService jwtService, PublicRoutes publicRoutes, CommonClientGateway commonClientGateway) {
         this.jwtService = jwtService;
         this.publicRoutes = publicRoutes;
+        this.commonClientGateway = commonClientGateway;
     }
 
     @Override
@@ -65,25 +69,68 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         if (roles == null) {
             roles = new ArrayList<>();
         }
+        String rolesAsString = String.join(",", roles);
+        List<String> finalRoles = roles;
+        return Mono.fromCallable(() -> {
+                    try {
+                        // Gọi synchronous Feign client
+                        List<ConfigViewResponseGatewayDTO> configViews = commonClientGateway.getConfigViewByRoleId(rolesAsString);
+                        return checkPermission(configViews, path, finalRoles);
+                    } catch (Exception e) {
+                        logger.error("Error calling common-service: {}", e.getMessage());
+                        return false;
+                    }
+                })
+                .flatMap(hasPermission -> {
+                    if (!hasPermission) {
+                        logger.warn("User {} with roles {} does not have permission to access {}", username, finalRoles, path);
+                        exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+                        return exchange.getResponse().setComplete();
+                    }
 
-        logger.info("JWT token validated for user: {} with roles: {}", username, String.join(",", roles));
+                    // Tạo request mới với headers bổ sung
+                    ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                            .header("X-User-Id", userId)
+                            .header("X-Username", username)
+                            .header("X-Roles", String.join(",", finalRoles))
+                            .build();
 
-        // Tạo request mới
-        ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
-                .header("X-User-Id", userId)
-                .header("X-Username", username)
-                .header("X-Roles", String.join(",", roles))
-                .build();
+                    // Log kiểm tra headers
+                    HttpHeaders headers = mutatedRequest.getHeaders();
+                    logger.info("Added custom headers:");
+                    logger.info("X-User-Id: {}", headers.getFirst("X-User-Id"));
+                    logger.info("X-Username: {}", headers.getFirst("X-Username"));
+                    logger.info("X-Roles: {}", headers.getFirst("X-Roles"));
 
-        // Log kiểm tra headers
-        HttpHeaders headers = mutatedRequest.getHeaders();
-        logger.info("Added custom headers:");
-        logger.info("X-User-Id: {}", headers.getFirst("X-User-Id"));
-        logger.info("X-Username: {}", headers.getFirst("X-Username"));
-        logger.info("X-Roles: {}", headers.getFirst("X-Roles"));
+                    // Tạo exchange mới và tiếp tục chuỗi filter
+                    return chain.filter(exchange.mutate().request(mutatedRequest).build());
+                })
+                .onErrorResume(e -> {
+                    logger.error("Error processing request: {}", e.getMessage());
+                    exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+                    return exchange.getResponse().setComplete();
+                });
+    }
 
-        // Tạo exchange mới và tiếp tục chuỗi filter
-        return chain.filter(exchange.mutate().request(mutatedRequest).build());
+
+    private boolean checkPermission(List<ConfigViewResponseGatewayDTO> configViews, String path, List<String> userRoles) {
+        // Kiểm tra quyền truy cập
+        for (ConfigViewResponseGatewayDTO configView : configViews) {
+            // Kiểm tra configView có active không và path có khớp không
+            if (configView.getStatus() == 1 && path.startsWith(configView.getApiPath())) {
+                // Kiểm tra nếu người dùng có bất kỳ vai trò nào được phép
+                String[] allowedRoleIds = configView.getRoleId().split(",");
+                for (String allowedRoleId : allowedRoleIds) {
+                    String trimmedAllowedRoleId = allowedRoleId.trim();
+                    for (String userRole : userRoles) {
+                        if (trimmedAllowedRoleId.equals(userRole.trim())) {
+                            return true; // Người dùng có quyền truy cập
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private String extractToken(ServerWebExchange exchange) {

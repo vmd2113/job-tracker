@@ -1,17 +1,11 @@
-package com.duongw.commonservice.model.dto.response.configview;
+package com.duongw.apigatewayservice.model.dto.reponse;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-
-public class ConfigViewResponseDTO {
-
+@Data
+public class ConfigViewResponseGatewayDTO {
     private Long id;
 
     private String viewName;

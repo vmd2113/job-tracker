@@ -8,6 +8,7 @@ import com.duongw.commonservice.model.dto.request.configview.UpdateConfigViewReq
 import com.duongw.commonservice.model.dto.response.configview.ConfigViewResponseDTO;
 import com.duongw.commonservice.service.IConfigViewService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(path = ApiPath.API_CONFIG_VIEW)
 
@@ -60,6 +62,8 @@ public class ConfigViewController {
 
     @GetMapping(path = "/role/{roleId}")
     public ResponseEntity<ApiResponse<?>> getConfigViewByRoleId(@PathVariable(name = "roleId") String roleId) {
+
+        log.info("CONFIG_VIEW_CONTROLLER  -> getConfigViewByRoleId" + roleId);
         List<ConfigViewResponseDTO> configViewList = configViewService.getConfigViewByRoleId(roleId);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("config-view.get-by-role-id.success"), configViewList);
         return ResponseEntity.ok(apiResponse);
