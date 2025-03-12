@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -60,11 +61,9 @@ public class ConfigViewController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping(path = "/role/{roleId}")
-    public ResponseEntity<ApiResponse<?>> getConfigViewByRoleId(@PathVariable(name = "roleId") String roleId) {
-
-        log.info("CONFIG_VIEW_CONTROLLER  -> getConfigViewByRoleId" + roleId);
-        List<ConfigViewResponseDTO> configViewList = configViewService.getConfigViewByRoleId(roleId);
+    @GetMapping(path = "/role")
+    public ResponseEntity<ApiResponse<?>> getConfigViewByRoleCode(@RequestParam(name = "roleCodes") List<String> roleCodes) {
+        List<ConfigViewResponseDTO> configViewList = configViewService.getConfigViewByRoleCode(roleCodes);
         ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("config-view.get-by-role-id.success"), configViewList);
         return ResponseEntity.ok(apiResponse);
     }

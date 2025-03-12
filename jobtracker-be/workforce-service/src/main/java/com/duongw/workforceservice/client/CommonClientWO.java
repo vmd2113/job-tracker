@@ -24,4 +24,6 @@ public interface CommonClientWO {
     ItemResponseDTO getItemByIdAndCategoryId(@PathVariable(name = "itemId") Long itemId, @PathVariable(name = "categoryId") Long categoryId);
 
 
+
+
 }

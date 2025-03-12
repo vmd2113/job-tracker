@@ -1,15 +1,16 @@
 package com.duongw.commonservice.controller.internal;
 
+import com.duongw.common.config.i18n.Translator;
 import com.duongw.common.constant.ApiPath;
+import com.duongw.common.model.dto.response.ApiResponse;
 import com.duongw.commonservice.model.dto.response.item.ItemResponseDTO;
 import com.duongw.commonservice.model.dto.response.role.RoleResponse;
 import com.duongw.commonservice.service.IItemService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -46,5 +47,11 @@ public class ItemInternalController {
     public ResponseEntity<ItemResponseDTO> getItemByIdAndCategoryId(@PathVariable(name = "itemId") Long itemId, @PathVariable(name = "categoryId") Long categoryId) {
         ItemResponseDTO item = itemService.getItemByIdAndCategoryId(itemId, categoryId);
         return ResponseEntity.ok(item);
+    }
+
+
+    @GetMapping(path = "/code")
+    public ItemResponseDTO getItemByCode(@RequestParam(name = "code") String code) {
+        return itemService.getItemByCode(code);
     }
 }

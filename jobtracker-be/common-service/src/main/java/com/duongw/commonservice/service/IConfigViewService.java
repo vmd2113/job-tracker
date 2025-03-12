@@ -10,7 +10,7 @@ public interface IConfigViewService {
 
     List<ConfigViewResponseDTO> getAllConfigView();
 
-    List<ConfigViewResponseDTO> getConfigViewByRoleId(String roleId);
+    List<ConfigViewResponseDTO> getConfigViewByRoleCode(List<String >roleCode);
 
     List<ConfigViewResponseDTO> getConfigViewByStatus(String status);
 

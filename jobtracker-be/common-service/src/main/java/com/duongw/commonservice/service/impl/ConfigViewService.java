@@ -7,6 +7,7 @@ import com.duongw.commonservice.model.dto.response.configview.ConfigViewResponse
 import com.duongw.commonservice.model.entity.ConfigView;
 import com.duongw.commonservice.repository.ConfigViewRepository;
 import com.duongw.commonservice.service.IConfigViewService;
+import com.duongw.commonservice.service.IItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,12 @@ public class ConfigViewService implements IConfigViewService {
 
     private final ConfigViewRepository configViewRepository;
 
+    private final IItemService itemService;
+
     @Autowired
-    public ConfigViewService(ConfigViewRepository configViewRepository) {
+    public ConfigViewService(ConfigViewRepository configViewRepository, IItemService itemService) {
         this.configViewRepository = configViewRepository;
+        this.itemService = itemService;
     }
 
     private ConfigViewResponseDTO convertToConfigViewResponseDTO(ConfigView configView) {
@@ -53,8 +57,10 @@ public class ConfigViewService implements IConfigViewService {
     }
 
 
-    private boolean hasRole(String roleIds, ConfigView configView) {
-        log.info("CONFIG_VIEW_SERVICE -> hasRole with input roleIds: " + roleIds);
+    private boolean hasRole(List<String> roleCodes, ConfigView configView) {
+
+
+        log.info("CONFIG_VIEW_SERVICE -> hasRole with input roleIds: "  );
 
         // Kiểm tra dữ liệu roleId trong configView
         String roleConfigView = configView.getRoleId();
@@ -62,14 +68,16 @@ public class ConfigViewService implements IConfigViewService {
             return false;
         }
 
+        List<String> roleId = roleCodes.stream().map(code-> itemService.getItemByCode(code).getItemId().toString()).toList();
+
         // Tách các roleId của người dùng thành mảng
-        String[] userRoleIds = roleIds.split(",");
+
 
         // Tách các roleId được cấu hình trong configView thành mảng
         String[] configRoleIds = roleConfigView.split(",");
 
         // Kiểm tra xem có bất kỳ roleId nào của người dùng khớp với roleId trong configView không
-        for (String userRoleId : userRoleIds) {
+        for (String userRoleId : roleId) {
             String trimmedUserRoleId = userRoleId.trim();
 
             for (String configRoleId : configRoleIds) {
@@ -79,6 +87,7 @@ public class ConfigViewService implements IConfigViewService {
 
                 if (trimmedUserRoleId.equals(trimmedConfigRoleId)) {
                     log.info("Found matching role: " + trimmedUserRoleId);
+                    log.info("SUCCESS");
                     return true; // Nếu có ít nhất một roleId khớp, trả về true
                 }
             }
@@ -88,13 +97,14 @@ public class ConfigViewService implements IConfigViewService {
     }
 
     @Override
-    public List<ConfigViewResponseDTO> getConfigViewByRoleId(String roleId) {
+    public List<ConfigViewResponseDTO> getConfigViewByRoleCode(List<String >roleCode) {
         log.info("CONFIG_VIEW_SERVICE  -> getConfigViewByRoleId");
         List<ConfigView> configViewList = configViewRepository.findAll();
 
+        log.info("CONFIG_VIEW_SERVICE  -> getConfigViewByRoleId" + configViewList.size());
         List<ConfigView> filteredByRoleId = configViewList
                 .stream()
-                .filter(conf -> hasRole(roleId, conf))
+                .filter(conf -> hasRole(roleCode, conf))
                 .toList();
 
         if (filteredByRoleId.isEmpty()) {

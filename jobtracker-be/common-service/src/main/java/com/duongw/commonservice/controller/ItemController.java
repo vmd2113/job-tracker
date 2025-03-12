@@ -58,6 +58,17 @@ public class ItemController {
         return ResponseEntity.ok(apiResponse);
     }
 
+
+    @GetMapping(path = "/code")
+    @Operation(summary = "get data of item by name", description = "Send a request via this API to get data of item by name")
+    public ResponseEntity<ApiResponse<?>> getItemByCode(@RequestParam(name = "code") String code) {
+
+        log.info("ITEM_CONTROLLER -> getItemByCodee");
+        ItemResponseDTO item = itemService.getItemByCode(code);
+        ApiResponse<?> apiResponse = new ApiResponse<>(HttpStatus.OK, Translator.toLocate("item.get-by-name.success"), item);
+        return ResponseEntity.ok(apiResponse);
+    }
+
     @GetMapping(path = "/category/{categoryId}")
     @Operation(summary = "get data of item by category id", description = "Send a request via this API to get data of item by category id")
     public ResponseEntity<ApiResponse<?>> getItemByCategoryId(@PathVariable(name = "categoryId") Long categoryId) {

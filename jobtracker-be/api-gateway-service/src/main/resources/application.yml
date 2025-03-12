@@ -53,16 +53,18 @@ spring:
       discovery:
         locator:
           enabled: true  # Cho phép tìm kiếm các service từ Eureka
-      routes:
-      # Các route sẽ được định nghĩa trong RouteConfig.java
-      # Các route sẽ được xác định qua Eureka, không cần khai báo trực tiếp tại đây
+      # Routes được định nghĩa trong RouteConfig.java
+      # Không định nghĩa routes ở đây
 
-     
+
 # Logging configuration
 logging:
   level:
-    org.springframework.cloud.gateway: DEBUG  # Cấu hình mức độ log cho Gateway
-    reactor.netty.http.client: DEBUG  # Cấu hình mức độ log cho client HTTP của Reactor
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG
+    com.duongw.apigatewayservice.filter: DEBUG
+    com.duongw.apigatewayservice.client: DEBUG  # Thêm log cho Feign client
+    org.springframework.cloud.openfeign: DEBUG # Log chi tiết cho OpenFeign
 
 jwt:
   access: ${JWT_ACCESS_SECRET:HgnVYeMhlFwCuCaTouYDFDVGUpys5Cm1PRgALsOJfxkDpH1ngbxwC02fMT9HZJf19BeP1wuDe4KQoWtbo2QICQ==}
