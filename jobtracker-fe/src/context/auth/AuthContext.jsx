@@ -4,6 +4,7 @@ import axiosInstance from "../../api/axiosConfig.js";
 
 const AuthContext = createContext(null);
 
+// eslint-disable-next-line react/prop-types
 export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);

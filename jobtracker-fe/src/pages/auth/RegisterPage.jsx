@@ -1,80 +1,69 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import registerImage from "../../assets/images/register.svg";
-import {useForm} from "react-hook-form";
-import {useNavigate} from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import FormInput from "../../components/common/input/FormInput.jsx";
 import Button from "../../components/common/button/Button.jsx";
-import {useAuth} from "../../context/auth/AuthContext.jsx";
+import { useAuth } from "../../context/auth/AuthContext.jsx";
 
 const RegisterPage = () => {
-    const {control, handleSubmit} = useForm();
-
+    const { control, handleSubmit, watch } = useForm();
     const navigate = useNavigate();
-    const {register} = useAuth();
+    const { register } = useAuth();
     const [error, setError] = useState('');
 
+    // Watch the password field for validation
+    const password = watch("password", "");
+
+    const navigateToLogin = () => {
+        navigate("/login");
+    };
 
     const onSubmit = async (data) => {
-        console.log("Submit button clicked");
+        // Check if passwords match before submitting
+        if (data.password !== data.confirmPassword) {
+            setError("Passwords do not match");
+            return;
+        }
+
         const result = await register(data);
-        console.log("RESULT REGISTER: ", result);
 
         if (result.success) {
-            // Lấy roles từ response
-            let roles = result.response?.data?.roles;
-            console.log("ROLES IN LOGIN: ", roles);
-
-            // Kiểm tra nếu roles là undefined, null hoặc không phải array
-            if (!roles || !Array.isArray(roles)) {
-                roles = []; // Gán một mảng rỗng nếu roles không hợp lệ
-            }
-
-            // Bây giờ an toàn để sử dụng .map()
+            let roles = result.response?.data?.roles || [];
             let listRoles = roles.map(role => role.roleCode);
-            console.log("LIST ROLES IN LOGIN: ", listRoles);
 
-            // Kiểm tra quyền và điều hướng
             if (listRoles.length > 0 && (listRoles.includes("ROLES_ADMIN") || listRoles.includes("ROLES_MANAGER"))) {
-                return navigate("/admin/dashboard");
-            }
-
-            if (listRoles.length > 0 && listRoles.includes("ROLES_STAFF")) {
-                return navigate("/clients/home");
+                navigate("/admin/dashboard");
+            } else if (listRoles.length > 0 && listRoles.includes("ROLES_STAFF")) {
+                navigate("/clients/home");
             } else {
-                //TODO unauthorized
-                return navigate("/login");
+                navigate("/login");
             }
         } else {
             setError(result.error);
         }
     };
 
-
     return (
-        <div className="container mx-auto p-4">
-            <div
-                className="flex space-y-4 text-center "
-            >
+        <div className="container mx-auto py-8 px-4 md:py-12">
+            <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden">
+                <div className="flex flex-col md:flex-row">
+                    {/* Form Section */}
+                    <div className="w-full md:w-1/2 p-6 md:p-10">
+                        <div className="max-w-md mx-auto">
+                            <h2 className="text-2xl font-bold text-gray-800 mb-6">Create Account</h2>
 
-                {/*form* container*/}
-                <div className="flex flex-col space-y-4">
+                            {error && (
+                                <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg">
+                                    {error}
+                                </div>
+                            )}
 
-                    {/*title*/}
-                    <div>
-
-                    </div>
-
-
-                    {/*form*/}
-                    <div>
-                        <form onSubmit={handleSubmit(onSubmit)}>
-
-                            <div className="space-y-4">
+                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                                 <FormInput
                                     control={control}
                                     name="username"
                                     label="Username"
-                                    clsName="w-72"
                                     type="text"
                                     placeholder="Nhập tên tài khoản"
                                     rules={{
@@ -90,18 +79,16 @@ const RegisterPage = () => {
                                         pattern: {
                                             value: /^[a-zA-Z0-9_]+$/,
                                             message: 'Username chỉ được chứa chữ cái, số và dấu gạch dưới'
-
                                         }
                                     }}
                                     className="w-full"
-                                    labelClassName="text-sm text-left font-medium text-gray-700"
+                                    labelClassName="text-sm font-medium text-gray-700"
                                     inputClassName="w-full rounded-md"
-                                ></FormInput>
+                                />
 
                                 <FormInput
                                     control={control}
                                     name="email"
-                                    clsName="w-72"
                                     label="Email"
                                     type="email"
                                     placeholder="Nhập email"
@@ -117,33 +104,27 @@ const RegisterPage = () => {
                                         }
                                     }}
                                     className="w-full"
-                                    labelClassName="text-sm text-left font-medium text-gray-700"
+                                    labelClassName="text-sm font-medium text-gray-700"
                                     inputClassName="w-full rounded-md"
-                                ></FormInput>
-
+                                />
 
                                 <FormInput
                                     control={control}
                                     name="phoneNumber"
                                     label="Số điện thoại"
-                                    clsName="w-72"
                                     type="text"
                                     placeholder="Nhập số điện thoại"
                                     rules={{
                                         required: 'Số điện thoại là bắt buộc',
                                         pattern: {
-                                            value: /^[0-9]/,
-                                            message: 'Số điện thoại phải có 10 chữ số'
-                                        },
-                                        maxLength: {
-                                            value: 11,
-                                            message: 'Số điện thoại không được vượt quá 11 chữ số'
+                                            value: /^[0-9]{10,11}$/,
+                                            message: 'Số điện thoại phải có 10-11 chữ số'
                                         }
                                     }}
                                     className="w-full"
-                                    labelClassName="text-sm text-left font-medium text-gray-700"
+                                    labelClassName="text-sm font-medium text-gray-700"
                                     inputClassName="w-full rounded-md"
-                                ></FormInput>
+                                />
 
                                 <FormInput
                                     control={control}
@@ -159,60 +140,67 @@ const RegisterPage = () => {
                                         }
                                     }}
                                     className="w-full"
-                                    labelClassName="text-sm text-left font-medium text-gray-700"
+                                    labelClassName="text-sm font-medium text-gray-700"
                                     inputClassName="w-full rounded-md"
                                 />
 
                                 <FormInput
                                     control={control}
-                                    name="confimPassword"
+                                    name="confirmPassword"
                                     label="Confirm Password"
                                     type="password"
-                                    placeholder="Nhập password"
+                                    placeholder="Nhập lại password"
                                     rules={{
                                         required: 'Confirm password là bắt buộc',
                                         minLength: {
                                             value: 8,
-                                            message: 'Confirm Password phải có ít nhất 8 ký tự'
-                                        }
+                                            message: 'Confirm password phải có ít nhất 8 ký tự'
+                                        },
+                                        validate: value =>
+                                            value === password || "Passwords do not match"
                                     }}
                                     className="w-full"
-                                    labelClassName="text-sm text-left font-medium text-gray-700"
+                                    labelClassName="text-sm font-medium text-gray-700"
                                     inputClassName="w-full rounded-md"
                                 />
 
-                            </div>
+                                <div className="pt-4 space-y-3">
+                                    <Button
+                                        type="confirm"
+                                        className="w-full rounded-xl"
+                                        variant="primary"
+                                        label="Register"
+                                    />
 
-                        </form>
 
-                        <Button
-                            type="confirm"
-                            className="w-full text-center mt-4"
-                            label="Register"
-
-                            onClick={handleSubmit(onSubmit)}
-                        />
-
+                                    <Button
+                                        type="other"
+                                        label="Already have an account? Login"
+                                        variant="secondary"
+                                        className="w-full bg-purple-300 text-white rounded-xl"
+                                        onlabel="Already have an account? Login"
+                                        onClick={navigateToLogin}
+                                    />
+                                </div>
+                            </form>
+                        </div>
                     </div>
 
-
+                    {/* Image Section */}
+                    <div className="w-full md:w-1/2 bg-purple-50 flex items-center justify-center p-6 md:p-10 order-first md:order-last">
+                        <div className="select-none pointer-events-none">
+                            <img
+                                src={registerImage}
+                                alt="Register illustration"
+                                className="w-full max-w-md h-auto"
+                                draggable="false"
+                            />
+                        </div>
+                    </div>
                 </div>
-
-                {/*image* container*/}
-                <div className="flex flex-col items-center justify-center space-y-4">
-
-                    {/*image*/}
-                    <div></div>
-                    {/*button to login page*/}
-                    <div></div>
-                </div>
-
-
             </div>
         </div>
     );
-
 }
+
 export default RegisterPage;
-
-
